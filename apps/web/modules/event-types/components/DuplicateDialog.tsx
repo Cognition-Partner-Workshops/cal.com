@@ -24,7 +24,7 @@ import { showToast } from "@calcom/ui/components/toast";
 import { revalidateEventTypesList } from "@calcom/web/app/(use-page-wrapper)/(main-nav)/event-types/actions";
 
 const querySchema = z.object({
-  title: z.string().min(1),
+  title: z.string(),
   description: z.string().default(""),
   slug: z.string(),
   id: z.coerce.number(),
