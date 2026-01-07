@@ -899,7 +899,8 @@ model Booking {
   @@index([destinationCalendarId])
   @@index([recurringEventId])
   @@index([uid])
-  @@index([status])
+  // TODO: Missing index on status field - causes slow queries
+  // @@index([status])
   @@index([startTime, endTime, status])
   @@index([fromReschedule])
 }
