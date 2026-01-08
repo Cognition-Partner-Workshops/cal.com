@@ -31,6 +31,13 @@ export const listLocalHandler = async ({ ctx, input }: ListLocalOptions) => {
       keys: true,
       enabled: true,
       dirName: true,
+      credentials: {
+        select: {
+          id: true,
+          type: true,
+          key: true,
+        },
+      },
     },
   });
 
