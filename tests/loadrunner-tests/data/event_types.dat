@@ -1,0 +1,11 @@
+pUsername,pEventSlug,pTeamSlug
+testuser1,30min,engineering-team
+testuser1,60min,engineering-team
+testuser2,15min,sales-team
+testuser2,consultation,sales-team
+testuser3,interview,hr-team
+testuser3,onboarding,hr-team
+testuser4,demo,product-team
+testuser4,feedback,product-team
+testuser5,support,support-team
+testuser5,training,support-team
