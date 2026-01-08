@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cal.com Architecture Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .diagram-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cal.com Ecosystem Architecture</h1>
+    
+    <h2>1. System Architecture Overview</h2>
+    <div class="diagram-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph USERS["Users & Clients"]
+        WEB_USER["Web Users"]
+        API_CLIENT["API Clients"]
+        BI_TOOLS["BI Tools<br/>(Tableau, Power BI)"]
+    end
+
+    subgraph CALCOM_APP["Cal.com Application"]
+        subgraph FRONTEND["Frontend Layer"]
+            NEXTJS["Next.js Web App<br/>(apps/web)"]
+            EMBED["Embed Components<br/>(packages/embeds)"]
+        end
+        
+        subgraph API_LAYER["API Layer"]
+            TRPC["tRPC API<br/>(packages/trpc)"]
+            REST_API["REST API<br/>(apps/api)"]
+            PLATFORM_API["Platform API<br/>(packages/platform)"]
+        end
+        
+        subgraph FEATURES["Core Features"]
+            BOOKING["Bookings<br/>(packages/features/bookings)"]
+            CALENDAR["Calendars<br/>(packages/features/calendars)"]
+            SCHEDULING["Scheduling<br/>(packages/features/schedules)"]
+            WORKFLOWS["Workflows<br/>(packages/features/workflows)"]
+            WEBHOOKS["Webhooks<br/>(packages/features/webhooks)"]
+        end
+        
+        subgraph APP_STORE["App Store Integrations"]
+            GOOGLE_CAL["Google Calendar"]
+            ZOOM["Zoom Video"]
+            STRIPE["Stripe Payments"]
+            HUBSPOT["HubSpot CRM"]
+            ZAPIER["Zapier"]
+            OTHER_APPS["50+ Other Apps"]
+        end
+        
+        subgraph DATA_LAYER["Data Layer"]
+            PRISMA["Prisma ORM<br/>(packages/prisma)"]
+        end
+    end
+
+    subgraph CALCOM_INFRA["cal.com-infra (AWS CDK)"]
+        VPC["AWS VPC<br/>(2 AZs)"]
+        RDS["PostgreSQL 15.4<br/>(RDS t3.micro)"]
+        SECRETS["AWS Secrets Manager<br/>(DB Credentials)"]
+    end
+
+    subgraph CALCOM_DATAENG["cal.com-dataeng (Databricks)"]
+        DATABRICKS_JOB["Ingestion Job<br/>(Daily Schedule)"]
+        PYSPARK["PySpark Notebook<br/>(JDBC Reader)"]
+        DELTA_LAKE["Delta Lake<br/>(Unity Catalog)"]
+        SQL_WAREHOUSE["SQL Warehouse<br/>(Analytics)"]
+    end
+
+    WEB_USER --> NEXTJS
+    API_CLIENT --> REST_API
+    API_CLIENT --> PLATFORM_API
+    
+    NEXTJS --> TRPC
+    EMBED --> TRPC
+    TRPC --> FEATURES
+    REST_API --> FEATURES
+    PLATFORM_API --> FEATURES
+    
+    FEATURES --> APP_STORE
+    FEATURES --> PRISMA
+    PRISMA --> RDS
+    
+    VPC --> RDS
+    SECRETS --> RDS
+    
+    RDS --> PYSPARK
+    PYSPARK --> DELTA_LAKE
+    DATABRICKS_JOB --> PYSPARK
+    DELTA_LAKE --> SQL_WAREHOUSE
+    SQL_WAREHOUSE --> BI_TOOLS
+
+    style CALCOM_APP fill:#e1f5fe
+    style CALCOM_INFRA fill:#fff3e0
+    style CALCOM_DATAENG fill:#e8f5e9
+        </pre>
+    </div>
+
+    <h2>2. Data Flow Diagram</h2>
+    <div class="diagram-container">
+        <pre class="mermaid">
+flowchart LR
+    subgraph SOURCE["Data Sources"]
+        USER_INPUT["User Actions<br/>(Create Booking)"]
+        CALENDAR_SYNC["Calendar Sync<br/>(Google, Outlook)"]
+        WEBHOOK_IN["Incoming Webhooks"]
+    end
+
+    subgraph CALCOM["Cal.com Application"]
+        API["API Layer"]
+        BUSINESS["Business Logic"]
+        ORM["Prisma ORM"]
+    end
+
+    subgraph POSTGRES["PostgreSQL (cal.com-infra)"]
+        BOOKING_TBL["Booking Table"]
+        USER_TBL["User Table"]
+        EVENT_TBL["EventType Table"]
+        CREDENTIAL_TBL["Credential Table"]
+    end
+
+    subgraph DATABRICKS["Databricks (cal.com-dataeng)"]
+        JDBC["JDBC Connection"]
+        TRANSFORM["Transform<br/>(camelCase → snake_case)"]
+        DELTA["Delta Lake Table"]
+    end
+
+    subgraph ANALYTICS["Analytics & BI"]
+        REPORTS["Reports"]
+        DASHBOARDS["Dashboards"]
+        ML["ML Models"]
+    end
+
+    USER_INPUT --> API
+    CALENDAR_SYNC --> API
+    WEBHOOK_IN --> API
+    API --> BUSINESS
+    BUSINESS --> ORM
+    ORM --> BOOKING_TBL
+    ORM --> USER_TBL
+    ORM --> EVENT_TBL
+    ORM --> CREDENTIAL_TBL
+
+    BOOKING_TBL --> JDBC
+    JDBC --> TRANSFORM
+    TRANSFORM --> DELTA
+    DELTA --> REPORTS
+    DELTA --> DASHBOARDS
+    DELTA --> ML
+
+    style CALCOM fill:#e1f5fe
+    style POSTGRES fill:#fff3e0
+    style DATABRICKS fill:#e8f5e9
+        </pre>
+    </div>
+
+    <h2>3. Database Entity Relationship Diagram</h2>
+    <div class="diagram-container">
+        <pre class="mermaid">
+erDiagram
+    User ||--o{ Booking : creates
+    User ||--o{ EventType : owns
+    User ||--o{ Schedule : has
+    User ||--o{ Credential : has
+    User ||--o{ Membership : belongs_to
+    
+    EventType ||--o{ Booking : generates
+    EventType ||--o{ Host : has
+    EventType }o--|| Team : belongs_to
+    EventType ||--o{ Webhook : triggers
+    EventType ||--o{ Workflow : has
+    
+    Team ||--o{ Membership : has
+    Team ||--o{ Credential : has
+    
+    Booking ||--o{ BookingReference : has
+    Booking ||--o{ Attendee : has
+    Booking }o--|| DestinationCalendar : syncs_to
+    
+    Credential }o--|| App : connects_to
+    
+    Schedule ||--o{ Availability : defines
+
+    User {
+        int id PK
+        string email
+        string username
+        string name
+        string timeZone
+        datetime createdDate
+    }
+    
+    EventType {
+        int id PK
+        string title
+        string slug
+        int length
+        string status
+        int userId FK
+        int teamId FK
+    }
+    
+    Booking {
+        int id PK
+        string uid
+        datetime startTime
+        datetime endTime
+        string status
+        int userId FK
+        int eventTypeId FK
+    }
+    
+    Team {
+        int id PK
+        string name
+        string slug
+        boolean isOrganization
+    }
+    
+    Credential {
+        int id PK
+        string type
+        json key
+        int userId FK
+        string appId FK
+    }
+    
+    Schedule {
+        int id PK
+        string name
+        string timeZone
+        int userId FK
+    }
+        </pre>
+    </div>
+
+    <h2>4. Integration Points with External Repos</h2>
+    <div class="diagram-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph CALCOM["cal.com (Main Application)"]
+        PRISMA_SCHEMA["Prisma Schema<br/>(packages/prisma/schema.prisma)"]
+        DB_URL["DATABASE_URL<br/>Environment Variable"]
+        BOOKING_MODEL["Booking Model<br/>(35+ fields)"]
+    end
+
+    subgraph INFRA["cal.com-infra (AWS CDK)"]
+        CDK_STACK["CalComInfrastructureStack"]
+        RDS_INSTANCE["RDS PostgreSQL Instance"]
+        SECRET_MGR["Secrets Manager<br/>(calcom-db-credentials)"]
+        
+        CDK_STACK --> RDS_INSTANCE
+        CDK_STACK --> SECRET_MGR
+        
+        OUTPUT_ENDPOINT["Output: DBEndpoint"]
+        OUTPUT_PORT["Output: DBPort"]
+        OUTPUT_SECRET["Output: SecretARN"]
+        
+        RDS_INSTANCE --> OUTPUT_ENDPOINT
+        RDS_INSTANCE --> OUTPUT_PORT
+        SECRET_MGR --> OUTPUT_SECRET
+    end
+
+    subgraph DATAENG["cal.com-dataeng (Databricks)"]
+        TF_VARS["Terraform Variables<br/>(postgres_host, postgres_user, etc.)"]
+        SECRET_SCOPE["Databricks Secret Scope<br/>(calcom-postgres-credentials)"]
+        NOTEBOOK["PySpark Notebook<br/>(booking_ingestion)"]
+        DELTA_TABLE["Delta Lake Table<br/>(catalog.schema.booking)"]
+        
+        TF_VARS --> SECRET_SCOPE
+        SECRET_SCOPE --> NOTEBOOK
+        NOTEBOOK --> DELTA_TABLE
+    end
+
+    OUTPUT_ENDPOINT -.->|"Provides connection endpoint"| DB_URL
+    OUTPUT_SECRET -.->|"Provides credentials"| DB_URL
+    DB_URL --> PRISMA_SCHEMA
+    PRISMA_SCHEMA --> BOOKING_MODEL
+
+    OUTPUT_ENDPOINT -.->|"postgres_host"| TF_VARS
+    OUTPUT_SECRET -.->|"postgres_password"| TF_VARS
+    
+    BOOKING_MODEL -.->|"JDBC Query reads<br/>Booking table"| NOTEBOOK
+
+    style CALCOM fill:#e1f5fe
+    style INFRA fill:#fff3e0
+    style DATAENG fill:#e8f5e9
+        </pre>
+    </div>
+
+    <h2>5. Cal.com Feature Modules</h2>
+    <div class="diagram-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph CORE["Core Modules"]
+        AUTH["Authentication<br/>(features/auth)"]
+        USERS["Users<br/>(features/users)"]
+        ORGS["Organizations<br/>(features/organizations)"]
+    end
+
+    subgraph SCHEDULING["Scheduling Modules"]
+        EVENTTYPES["Event Types<br/>(features/eventtypes)"]
+        SCHEDULES["Schedules<br/>(features/schedules)"]
+        AVAILABILITY["Availability<br/>(features/availability)"]
+        SLOTS["Slots<br/>(features/slots)"]
+        BOOKINGS["Bookings<br/>(features/bookings)"]
+    end
+
+    subgraph CALENDAR["Calendar Modules"]
+        CALENDARS["Calendars<br/>(features/calendars)"]
+        BUSY_TIMES["Busy Times<br/>(features/busyTimes)"]
+        CAL_VIEW["Calendar View<br/>(features/calendar-view)"]
+    end
+
+    subgraph AUTOMATION["Automation Modules"]
+        WORKFLOWS["Workflows<br/>(features/workflows)"]
+        WEBHOOKS["Webhooks<br/>(features/webhooks)"]
+        ROUTING["Routing Forms<br/>(features/routing-forms)"]
+    end
+
+    subgraph INTEGRATIONS["Integration Modules"]
+        CONFERENCING["Conferencing<br/>(features/conferencing)"]
+        CREDENTIALS["Credentials<br/>(features/credentials)"]
+        CRM["CRM Manager<br/>(features/crmManager)"]
+        EMBED["Embed<br/>(features/embed)"]
+    end
+
+    subgraph ANALYTICS["Analytics Modules"]
+        INSIGHTS["Insights<br/>(features/insights)"]
+        BOOKING_REPORT["Booking Report<br/>(features/bookingReport)"]
+    end
+
+    AUTH --> USERS
+    USERS --> ORGS
+    USERS --> EVENTTYPES
+    EVENTTYPES --> SCHEDULES
+    SCHEDULES --> AVAILABILITY
+    AVAILABILITY --> SLOTS
+    SLOTS --> BOOKINGS
+    BOOKINGS --> CALENDARS
+    BOOKINGS --> WORKFLOWS
+    BOOKINGS --> WEBHOOKS
+    BOOKINGS --> CONFERENCING
+    BOOKINGS --> INSIGHTS
+        </pre>
+    </div>
+
+    <h2>6. App Store Integrations</h2>
+    <div class="diagram-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph CALCOM["Cal.com App Store"]
+        APP_REGISTRY["App Registry<br/>(_appRegistry.ts)"]
+    end
+
+    subgraph CALENDARS["Calendar Apps"]
+        GOOGLE_CAL["Google Calendar"]
+        OFFICE365["Office 365 Calendar"]
+        APPLE_CAL["Apple Calendar"]
+        CALDAV["CalDAV"]
+        LARK["Lark Calendar"]
+        ZOHO_CAL["Zoho Calendar"]
+    end
+
+    subgraph VIDEO["Video Conferencing"]
+        ZOOM["Zoom"]
+        GOOGLE_MEET["Google Meet"]
+        TEAMS["MS Teams"]
+        DAILY["Daily.co"]
+        JITSI["Jitsi"]
+        WEBEX["Webex"]
+        HUDDLE["Huddle01"]
+    end
+
+    subgraph PAYMENTS["Payment Apps"]
+        STRIPE["Stripe"]
+        PAYPAL["PayPal"]
+        BTCPAY["BTCPay Server"]
+    end
+
+    subgraph CRM["CRM Apps"]
+        HUBSPOT["HubSpot"]
+        SALESFORCE["Salesforce"]
+        PIPEDRIVE["Pipedrive"]
+        CLOSECOM["Close.com"]
+        ATTIO["Attio"]
+        ZOHO_CRM["Zoho CRM"]
+    end
+
+    subgraph AUTOMATION["Automation Apps"]
+        ZAPIER["Zapier"]
+        MAKE["Make"]
+        N8N["n8n"]
+        PIPEDREAM["Pipedream"]
+    end
+
+    subgraph ANALYTICS["Analytics Apps"]
+        GA4["Google Analytics 4"]
+        POSTHOG["PostHog"]
+        PLAUSIBLE["Plausible"]
+        FATHOM["Fathom"]
+        MATOMO["Matomo"]
+    end
+
+    subgraph MESSAGING["Messaging Apps"]
+        DISCORD["Discord"]
+        TELEGRAM["Telegram"]
+        WHATSAPP["WhatsApp"]
+        SENDGRID["SendGrid"]
+    end
+
+    APP_REGISTRY --> CALENDARS
+    APP_REGISTRY --> VIDEO
+    APP_REGISTRY --> PAYMENTS
+    APP_REGISTRY --> CRM
+    APP_REGISTRY --> AUTOMATION
+    APP_REGISTRY --> ANALYTICS
+    APP_REGISTRY --> MESSAGING
+        </pre>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            er: {
+                useMaxWidth: true
+            }
+        });
+    </script>
+</body>
+</html>
