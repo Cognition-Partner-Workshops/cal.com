@@ -44,7 +44,7 @@ module.exports = {
             DEFAULT: "#333333",
             secondary: "#666666",
             muted: "#8E8E93",
-            emphasis: "#3C3F44",
+            emphasis: "#232F3E",
           },
           bg: {
             DEFAULT: "#FFFFFF",
@@ -56,15 +56,15 @@ module.exports = {
             light: "#C6C6C8",
           },
           accent: {
-            DEFAULT: "#007AFF",
+            DEFAULT: "#FF9900",
             success: "#34C759",
             warning: "#FF9500",
             error: "#FF3B30",
             destructive: "#DC2626",
           },
           brand: {
-            DEFAULT: "#292929",
-            black: "#000000",
+            DEFAULT: "#FF9900",
+            black: "#232F3E",
           },
         },
       },

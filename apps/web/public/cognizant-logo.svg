@@ -1,0 +1,11 @@
+<svg width="180" height="40" viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cognizant C Icon -->
+  <g transform="translate(0, 4)">
+    <!-- Back C shape (darker blue) -->
+    <path d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16c4.418 0 8.418-1.791 11.314-4.686l-4.243-4.243C21.072 25.072 18.636 26 16 26c-5.523 0-10-4.477-10-10s4.477-10 10-10c2.636 0 5.072.928 7.071 2.929l4.243-4.243C24.418 1.791 20.418 0 16 0z" fill="#1A4B8E"/>
+    <!-- Front C shape (lighter blue) -->
+    <path d="M22 6C15.373 6 10 11.373 10 18s5.373 12 12 12c3.314 0 6.314-1.343 8.485-3.515l-3.182-3.182C25.804 24.803 23.977 25.5 22 25.5c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5c1.977 0 3.804.697 5.303 2.197l3.182-3.182C28.314 7.343 25.314 6 22 6z" fill="#0D629A" transform="translate(2, -2)"/>
+  </g>
+  <!-- Cognizant Text -->
+  <text x="42" y="28" font-family="Arial, sans-serif" font-size="22" font-weight="400" fill="#1A4B8E">cognizant</text>
+</svg>
