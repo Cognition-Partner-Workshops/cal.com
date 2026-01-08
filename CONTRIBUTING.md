@@ -2,6 +2,19 @@
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
+## Table of Contents
+
+- [House Rules](#house-rules-for-prs-and-issues)
+- [Priorities](#priorities)
+- [File Naming Conventions](#file-naming-conventions)
+- [Developing](#developing)
+- [Building](#building)
+- [Testing](#testing)
+- [Linting](#linting)
+- [Making a Pull Request](#making-a-pull-request)
+
+---
+
 ## House Rules (for PRs and Issues)
 
 ### 👥 Prevent Work Duplication
