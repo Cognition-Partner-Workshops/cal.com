@@ -492,7 +492,8 @@ describe("Availability Calculation Tests", () => {
     it("should handle unlimited future booking", () => {
       const currentDate = new Date("2024-01-15");
       const bookingDate = new Date("2025-01-15");
-      expect(isWithinFutureLimit(bookingDate, currentDate, 365)).toBe(true);
+      // 2024 is a leap year, so Jan 15 2024 to Jan 15 2025 is 366 days
+      expect(isWithinFutureLimit(bookingDate, currentDate, 366)).toBe(true);
     });
   });
 });
