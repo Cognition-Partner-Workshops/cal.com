@@ -58,7 +58,7 @@ export const EventTypeDuplicateInput: z.ZodType<TEventTypeDuplicateInput> = z
   .object({
     id: z.number(),
     slug: z.string(),
-    title: z.string().min(1),
+    title: z.string(),
     description: z.string(),
     length: z.number(),
     teamId: z.number().nullish(),
@@ -86,7 +86,7 @@ export type TCreateEventTypeInput = {
 
 export const createEventTypeInput: z.ZodType<TCreateEventTypeInput> = z
   .object({
-    title: z.string().trim().min(1),
+    title: z.string().trim(),
     slug: eventTypeSlug,
     description: z.string().nullish(),
     length: z.number().int(),

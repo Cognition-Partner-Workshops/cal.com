@@ -323,7 +323,7 @@ const BaseEventTypeUpdateInput: z.ZodType<TUpdateInputSchema> = z
     // Fields from EventTypeSchema
     periodType: z.enum(["UNLIMITED", "ROLLING", "ROLLING_WINDOW", "RANGE"]).optional(),
     schedulingType: z.enum(["ROUND_ROBIN", "COLLECTIVE", "MANAGED"]).nullable().optional(),
-    title: z.string().min(1).optional(),
+    title: z.string().optional(),
     slug: z.string().optional(),
     description: z.string().nullable().optional(),
     interfaceLanguage: z.string().nullable().optional(),
