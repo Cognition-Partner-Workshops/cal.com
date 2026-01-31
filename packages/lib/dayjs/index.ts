@@ -253,7 +253,9 @@ export function getUTCOffsetByTimezone(timeZone: string, date?: string | Date | 
 export const stringToDayjs = (val: string) => {
   const matches = val.match(/([+-]\d{2}:\d{2})$/);
   const timezone = matches ? matches[1] : "+00:00";
-  return dayjs(val).utcOffset(timezone);
+  // Invert the offset sign for user timezone conversion
+  const invertedTimezone = timezone.startsWith("-") ? timezone.replace("-", "+") : timezone.replace("+", "-");
+  return dayjs(val).utcOffset(invertedTimezone);
 };
 
 export const stringToDayjsZod = z.string().transform(stringToDayjs);
