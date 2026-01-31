@@ -601,14 +601,7 @@ export async function getBookings({
           jsonObjectFrom(
             eb
               .selectFrom("users")
-              .select([
-                "users.id",
-                "users.name",
-                "users.email",
-                "users.avatarUrl",
-                "users.username",
-                "users.timeZone",
-              ])
+              .selectAll()
               .whereRef("Booking.userId", "=", "users.id")
           ).as("user"),
           jsonArrayFrom(
