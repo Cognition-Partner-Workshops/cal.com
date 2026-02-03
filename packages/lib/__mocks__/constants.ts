@@ -23,30 +23,33 @@ const initialConstants = {
   DEFAULT_GROUP_ID: "default_group_id",
 } as Partial<typeof constants>;
 
-export const mockedConstants = { ...initialConstants };
+const _mockedConstants: Partial<typeof constants> = { ...initialConstants };
 
-vi.mock("@calcom/lib/constants", () => mockedConstants);
+vi.mock("@calcom/lib/constants", () => _mockedConstants);
 
 beforeEach(() => {
-  Object.assign(mockedConstants, initialConstants);
+  Object.assign(_mockedConstants, initialConstants);
 });
 
-export const constantsScenarios = {
-  enableTeamBilling: () => {
+const _constantsScenarios = {
+  enableTeamBilling: (): void => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    mockedConstants.IS_TEAM_BILLING_ENABLED = true;
+    // @ts-expect-error
+    _mockedConstants.IS_TEAM_BILLING_ENABLED = true;
   },
-  setWebsiteUrl: (url: string) => {
+  setWebsiteUrl: (url: string): void => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    mockedConstants.WEBSITE_URL = url;
+    // @ts-expect-error
+    _mockedConstants.WEBSITE_URL = url;
   },
-  set: (envVariables: Record<string, string>) => {
+  set: (envVariables: Record<string, string>): void => {
     Object.entries(envVariables).forEach(([key, value]) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      mockedConstants[key] = value;
+      // @ts-expect-error
+      _mockedConstants[key] = value;
     });
   },
 };
+
+export const mockedConstants: Partial<typeof constants> = _mockedConstants;
+export const constantsScenarios: typeof _constantsScenarios = _constantsScenarios;
