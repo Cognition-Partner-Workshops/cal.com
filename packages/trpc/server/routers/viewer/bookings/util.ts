@@ -4,16 +4,28 @@ import type {
   EventType,
   BookingReference,
   Attendee,
-  Credential,
   DestinationCalendar,
   User,
 } from "@calcom/prisma/client";
 import { MembershipRole, SchedulingType } from "@calcom/prisma/enums";
+import { safeCredentialSelect } from "@calcom/prisma/selects/credential";
 
 import { TRPCError } from "@trpc/server";
 
 import authedProcedure from "../../../procedures/authedProcedure";
 import { commonBookingSchema } from "./types";
+
+// Type for safe credential without the sensitive 'key' field
+type SafeCredential = {
+  id: number;
+  type: string;
+  userId: number | null;
+  user: { email: string } | null;
+  teamId: number | null;
+  appId: string | null;
+  invalid: boolean | null;
+  delegationCredentialId: number | null;
+};
 
 export const bookingsProcedure = authedProcedure
   .input(commonBookingSchema)
@@ -39,7 +51,10 @@ export const bookingsProcedure = authedProcedure
       user: {
         include: {
           destinationCalendar: true,
-          credentials: true,
+          // Use safeCredentialSelect to avoid exposing sensitive credential.key field
+          credentials: {
+            select: safeCredentialSelect,
+          },
           profiles: {
             select: {
               organizationId: true,
@@ -114,7 +129,8 @@ export type BookingsProcedureContext = {
     user:
       | (User & {
           destinationCalendar: DestinationCalendar | null;
-          credentials: Credential[];
+          // Using SafeCredential type to ensure sensitive 'key' field is not exposed
+          credentials: SafeCredential[];
           profiles: { organizationId: number }[];
         })
       | null;

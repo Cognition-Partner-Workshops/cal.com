@@ -393,6 +393,71 @@ export class InsightsRoutingBaseService {
     };
   }
 
+  /**
+   * Maps a validated column name to its SQL representation.
+   * Uses switch/case instead of Prisma.raw() to prevent SQL injection.
+   */
+  private getColumnSql(columnName: string): Prisma.Sql | null {
+    switch (columnName) {
+      case "id":
+        return Prisma.sql`"id"`;
+      case "uuid":
+        return Prisma.sql`"uuid"`;
+      case "formId":
+        return Prisma.sql`"formId"`;
+      case "formName":
+        return Prisma.sql`"formName"`;
+      case "formTeamId":
+        return Prisma.sql`"formTeamId"`;
+      case "formUserId":
+        return Prisma.sql`"formUserId"`;
+      case "bookingUid":
+        return Prisma.sql`"bookingUid"`;
+      case "bookingId":
+        return Prisma.sql`"bookingId"`;
+      case "bookingStatus":
+        return Prisma.sql`"bookingStatus"`;
+      case "bookingStatusOrder":
+        return Prisma.sql`"bookingStatusOrder"`;
+      case "bookingCreatedAt":
+        return Prisma.sql`"bookingCreatedAt"`;
+      case "bookingUserId":
+        return Prisma.sql`"bookingUserId"`;
+      case "bookingUserName":
+        return Prisma.sql`"bookingUserName"`;
+      case "bookingUserEmail":
+        return Prisma.sql`"bookingUserEmail"`;
+      case "bookingUserAvatarUrl":
+        return Prisma.sql`"bookingUserAvatarUrl"`;
+      case "bookingAssignmentReason":
+        return Prisma.sql`"bookingAssignmentReason"`;
+      case "bookingStartTime":
+        return Prisma.sql`"bookingStartTime"`;
+      case "bookingEndTime":
+        return Prisma.sql`"bookingEndTime"`;
+      case "eventTypeId":
+        return Prisma.sql`"eventTypeId"`;
+      case "eventTypeParentId":
+        return Prisma.sql`"eventTypeParentId"`;
+      case "eventTypeSchedulingType":
+        return Prisma.sql`"eventTypeSchedulingType"`;
+      case "createdAt":
+        return Prisma.sql`"createdAt"`;
+      case "utm_source":
+        return Prisma.sql`"utm_source"`;
+      case "utm_medium":
+        return Prisma.sql`"utm_medium"`;
+      case "utm_campaign":
+        return Prisma.sql`"utm_campaign"`;
+      case "utm_term":
+        return Prisma.sql`"utm_term"`;
+      case "utm_content":
+        return Prisma.sql`"utm_content"`;
+      default:
+        return null;
+    }
+  }
+
   private buildOrderByClause(sorting?: Array<{ id: string; desc: boolean }>): Prisma.Sql {
     if (!sorting || sorting.length === 0) {
       return Prisma.sql`ORDER BY "createdAt" DESC`;
@@ -402,8 +467,12 @@ export class InsightsRoutingBaseService {
       .filter((sort) => ALLOWED_SORT_COLUMNS.has(sort.id))
       .map((sort) => {
         const direction = sort.desc ? Prisma.sql`DESC` : Prisma.sql`ASC`;
-        return Prisma.sql`"${Prisma.raw(sort.id)}" ${direction}`;
-      });
+        // Use switch/case mapping instead of Prisma.raw() to prevent SQL injection
+        const columnSql = this.getColumnSql(sort.id);
+        if (!columnSql) return null;
+        return Prisma.sql`${columnSql} ${direction}`;
+      })
+      .filter((part): part is Prisma.Sql => part !== null);
 
     if (orderByParts.length === 0) {
       return Prisma.sql`ORDER BY "createdAt" DESC`;

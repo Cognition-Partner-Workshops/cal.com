@@ -138,6 +138,67 @@ const NOTHING_CONDITION = Prisma.sql`1=0`;
 
 const bookingDataKeys = new Set(Object.keys(bookingDataSchema.shape));
 
+/**
+ * Maps a validated booking field name to its SQL representation.
+ * Uses switch/case instead of Prisma.raw() to prevent SQL injection.
+ */
+function getBookingFieldSql(fieldName: string): Prisma.Sql | null {
+  switch (fieldName) {
+    case "id":
+      return Prisma.sql`"id"`;
+    case "uid":
+      return Prisma.sql`"uid"`;
+    case "eventTypeId":
+      return Prisma.sql`"eventTypeId"`;
+    case "title":
+      return Prisma.sql`"title"`;
+    case "description":
+      return Prisma.sql`"description"`;
+    case "startTime":
+      return Prisma.sql`"startTime"`;
+    case "endTime":
+      return Prisma.sql`"endTime"`;
+    case "createdAt":
+      return Prisma.sql`"createdAt"`;
+    case "updatedAt":
+      return Prisma.sql`"updatedAt"`;
+    case "location":
+      return Prisma.sql`"location"`;
+    case "paid":
+      return Prisma.sql`"paid"`;
+    case "status":
+      return Prisma.sql`"status"`;
+    case "rescheduled":
+      return Prisma.sql`"rescheduled"`;
+    case "userId":
+      return Prisma.sql`"userId"`;
+    case "teamId":
+      return Prisma.sql`"teamId"`;
+    case "eventLength":
+      return Prisma.sql`"eventLength"`;
+    case "eventParentId":
+      return Prisma.sql`"eventParentId"`;
+    case "userEmail":
+      return Prisma.sql`"userEmail"`;
+    case "userName":
+      return Prisma.sql`"userName"`;
+    case "userUsername":
+      return Prisma.sql`"userUsername"`;
+    case "ratingFeedback":
+      return Prisma.sql`"ratingFeedback"`;
+    case "rating":
+      return Prisma.sql`"rating"`;
+    case "noShowHost":
+      return Prisma.sql`"noShowHost"`;
+    case "isTeamBooking":
+      return Prisma.sql`"isTeamBooking"`;
+    case "timeStatus":
+      return Prisma.sql`"timeStatus"`;
+    default:
+      return null;
+  }
+}
+
 export class InsightsBookingBaseService {
   private prisma: PrismaClient;
   private options: InsightsBookingServiceOptions | null;
@@ -209,9 +270,13 @@ export class InsightsBookingBaseService {
       }
 
       if (keys.length > 0) {
-        // Use Prisma.sql for each field to ensure proper escaping
-        const sqlFields = keys.map((field) => Prisma.sql`"${Prisma.raw(field)}"`);
-        selectFields = Prisma.join(sqlFields, ", ");
+        // Use switch/case mapping instead of Prisma.raw() to prevent SQL injection
+        const sqlFields = keys
+          .map((field) => getBookingFieldSql(field))
+          .filter((sql): sql is Prisma.Sql => sql !== null);
+        if (sqlFields.length > 0) {
+          selectFields = Prisma.join(sqlFields, ", ");
+        }
       }
     }
 
