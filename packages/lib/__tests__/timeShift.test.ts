@@ -1,8 +1,7 @@
+import dayjs from "@calcom/dayjs";
 import { describe, expect, it } from "vitest";
 
-import dayjs from "@calcom/dayjs";
-
-import { getTimeShiftFlags } from "../timeShift";
+import { getFirstShiftFlags, getTimeShiftFlags } from "../timeShift";
 
 describe("getTimeShiftFlags", () => {
   it("returns empty array for no dates", () => {
@@ -49,5 +48,35 @@ describe("getTimeShiftFlags", () => {
     const flags = getTimeShiftFlags({ dates, timezone: tz });
 
     expect(flags).toEqual([false, false, false]);
+  });
+});
+
+describe("getFirstShiftFlags", () => {
+  it("returns empty array for empty input", () => {
+    expect(getFirstShiftFlags([])).toEqual([]);
+  });
+
+  it("returns all false for no shifts", () => {
+    expect(getFirstShiftFlags([false, false, false])).toEqual([false, false, false]);
+  });
+
+  it("marks only the first shift as true", () => {
+    expect(getFirstShiftFlags([false, false, true, true, true])).toEqual([false, false, true, false, false]);
+  });
+
+  it("handles single element array with no shift", () => {
+    expect(getFirstShiftFlags([false])).toEqual([false]);
+  });
+
+  it("handles single element array with shift", () => {
+    expect(getFirstShiftFlags([true])).toEqual([true]);
+  });
+
+  it("handles shift at the beginning", () => {
+    expect(getFirstShiftFlags([true, true, false])).toEqual([true, false, false]);
+  });
+
+  it("handles alternating shifts", () => {
+    expect(getFirstShiftFlags([false, true, false, true])).toEqual([false, true, false, false]);
   });
 });
