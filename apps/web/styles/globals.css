@@ -4,6 +4,11 @@
 @import "../../../packages/coss-ui/src/styles/globals.css";
 @import "./raqb.css";
 
+/* ========================================
+   CRICKET THEME - Global Styles
+   Rich graphical cricket-inspired design
+   ======================================== */
+
 ::-moz-selection {
   color: var(--cal-brand-text);
   background: var(--cal-brand);
@@ -17,6 +22,160 @@
 body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Cricket Field Pattern Background */
+.cricket-field-bg {
+  background:
+    linear-gradient(
+      135deg,
+      transparent 25%,
+      rgba(34, 139, 34, 0.03) 25%,
+      rgba(34, 139, 34, 0.03) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(34, 139, 34, 0.03) 75%
+    ),
+    linear-gradient(
+      45deg,
+      transparent 25%,
+      rgba(34, 139, 34, 0.03) 25%,
+      rgba(34, 139, 34, 0.03) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(34, 139, 34, 0.03) 75%
+    );
+  background-size: 60px 60px;
+  background-color: var(--cal-bg);
+}
+
+/* Cricket Pitch Stripe Pattern */
+.cricket-pitch-pattern {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 20px,
+    rgba(139, 90, 43, 0.05) 20px,
+    rgba(139, 90, 43, 0.05) 40px
+  );
+}
+
+/* Cricket Ball Accent Decoration */
+.cricket-ball-accent {
+  position: relative;
+}
+
+.cricket-ball-accent::before {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at 30% 30%, #cc3333, #8b0000);
+  border-radius: 50%;
+  box-shadow:
+    inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Cricket Stumps Decoration */
+.cricket-stumps-icon {
+  display: inline-flex;
+  gap: 2px;
+  align-items: flex-end;
+}
+
+.cricket-stumps-icon::before,
+.cricket-stumps-icon::after {
+  content: "";
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(to bottom, #f5f5dc, #d4a574);
+  border-radius: 1px;
+}
+
+/* Cricket-themed Card Styling */
+.cricket-card {
+  background: linear-gradient(145deg, var(--cal-bg) 0%, var(--cal-bg-subtle) 100%);
+  border: 1px solid var(--cal-border);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgba(34, 139, 34, 0.1),
+    0 2px 4px -1px rgba(34, 139, 34, 0.06);
+  transition: all 0.3s ease;
+}
+
+.cricket-card:hover {
+  box-shadow:
+    0 10px 15px -3px rgba(34, 139, 34, 0.15),
+    0 4px 6px -2px rgba(34, 139, 34, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Cricket-themed Button Enhancement */
+.cricket-btn-primary {
+  background: linear-gradient(135deg, hsla(140, 60%, 28%, 1) 0%, hsla(140, 55%, 20%, 1) 100%);
+  border: none;
+  color: var(--cal-brand-text);
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 14px 0 rgba(34, 139, 34, 0.39),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.cricket-btn-primary:hover {
+  background: linear-gradient(135deg, hsla(140, 55%, 32%, 1) 0%, hsla(140, 50%, 24%, 1) 100%);
+  box-shadow:
+    0 6px 20px rgba(34, 139, 34, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Cricket Score Board Style Header */
+.cricket-scoreboard {
+  background: linear-gradient(180deg, hsla(140, 50%, 12%, 1) 0%, hsla(140, 45%, 8%, 1) 100%);
+  color: #f0e68c;
+  font-family: "Courier New", monospace;
+  padding: 16px 24px;
+  border-radius: 8px;
+  border: 2px solid hsla(45, 70%, 50%, 0.3);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Cricket Ground Boundary Ring */
+.cricket-boundary-ring {
+  border: 3px solid transparent;
+  border-image: linear-gradient(135deg, hsla(140, 60%, 35%, 1), hsla(140, 50%, 25%, 1), hsla(35, 70%, 55%, 1))
+    1;
+  border-radius: 50%;
+}
+
+/* Cricket-themed Avatar Ring */
+.cricket-avatar-ring {
+  padding: 3px;
+  background: linear-gradient(135deg, hsla(140, 60%, 35%, 1), hsla(0, 75%, 40%, 1));
+  border-radius: 50%;
+}
+
+/* Cricket Grass Texture Overlay */
+.cricket-grass-texture {
+  position: relative;
+}
+
+.cricket-grass-texture::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23228B22' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 /*
@@ -127,7 +286,7 @@ html.todesktop.dark {
  * Override the default tailwindcss-forms styling (default is: 'colors.blue.600')
  * @see: https://github.com/tailwindlabs/tailwindcss-forms/issues/14#issuecomment-1005376006
  */
- @layer base {
+@layer base {
   [type="text"]:focus,
   [type="email"]:focus,
   [type="url"]:focus,
