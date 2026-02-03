@@ -24,7 +24,7 @@ type SafeCredential = {
   teamId: number | null;
   appId: string | null;
   invalid: boolean | null;
-  delegationCredentialId: number | null;
+  delegationCredentialId: string | null;
 };
 
 export const bookingsProcedure = authedProcedure
