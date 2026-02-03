@@ -108,3 +108,6 @@ packages/**/.yarn/ci-cache/
 
 # trigger.dev
 .trigger
+
+# Test credentials
+TEST_CREDENTIALS.md
