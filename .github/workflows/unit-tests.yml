@@ -15,6 +15,14 @@ jobs:
       - uses: ./.github/actions/dangerous-git-checkout
       - uses: ./.github/actions/yarn-install
       - run: yarn prisma generate
-      - run: yarn test -- --no-isolate
+      - name: Run unit tests with coverage
+        run: yarn test -- --no-isolate --coverage
+      - name: Check coverage thresholds
+        run: |
+          echo "Coverage report generated. Checking thresholds..."
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "Coverage summary:"
+            cat coverage/coverage-summary.json | jq '.total'
+          fi
       # We could add different timezones here that we need to run our tests in
       - run: TZ=America/Los_Angeles VITEST_MODE=timezone yarn test -- --no-isolate
