@@ -109,6 +109,11 @@ export default defineConfig({
     },
     passWithNoTests: true,
     testTimeout: 500000,
+    // Retry flaky tests up to 2 times to handle race conditions in CI
+    // This addresses the "Closing rpc while fetch was pending" error
+    retry: process.env.CI ? 2 : 0,
+    // Increase teardown timeout to allow pending operations to complete
+    teardownTimeout: 10000,
   },
 });
 
