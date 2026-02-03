@@ -511,7 +511,7 @@ export default function Signup({
                       autoComplete="new-password"
                       label={t("password")}
                       {...register("password")}
-                      hintErrors={["caplow", "min", "num"]}
+                      hintErrors={["caplow", "min", "max", "num", "special"]}
                     />
                   )}
                   {/* Cloudflare Turnstile Captcha */}

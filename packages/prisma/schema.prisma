@@ -352,6 +352,17 @@ model UserPassword {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// Stores hashed previous passwords to prevent password reuse
+model PasswordHistory {
+  id        Int      @id @default(autoincrement())
+  hash      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
 model TravelSchedule {
   id           Int       @id @default(autoincrement())
   userId       Int
@@ -483,6 +494,7 @@ model User {
   calAiPhoneNumbers              CalAiPhoneNumber[]
   agents                         Agent[]
   holidaySettings                UserHolidaySettings?
+  passwordHistory                PasswordHistory[]
 
   autoOptInFeatures Boolean @default(false)
 
