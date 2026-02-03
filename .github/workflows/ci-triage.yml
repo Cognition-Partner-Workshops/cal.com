@@ -1,0 +1,371 @@
+name: CI Triage
+
+on:
+  workflow_run:
+    workflows: ["PR Update", "All checks"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "The PR number to triage (optional, will auto-detect from workflow run)"
+        required: false
+        type: string
+      run_id:
+        description: "The workflow run ID to analyze (optional, uses triggering run)"
+        required: false
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  triage:
+    name: Triage Failed Checks
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'failure' }}
+    outputs:
+      pr-number: ${{ steps.get-context.outputs.pr-number }}
+      has-failures: ${{ steps.analyze.outputs.has-failures }}
+      triage-report: ${{ steps.analyze.outputs.triage-report }}
+    steps:
+      - name: Get workflow context
+        id: get-context
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const isDispatch = context.eventName === 'workflow_dispatch';
+            let runId, prNumber;
+
+            if (isDispatch) {
+              runId = context.payload.inputs.run_id || '';
+              prNumber = context.payload.inputs.pr_number || '';
+
+              if (!runId && !prNumber) {
+                console.log('No run_id or pr_number provided for workflow_dispatch');
+                core.setOutput('pr-number', '');
+                core.setOutput('run-id', '');
+                return;
+              }
+
+              if (prNumber && !runId) {
+                const { data: pr } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: parseInt(prNumber)
+                });
+
+                const { data: workflows } = await github.rest.actions.listRepoWorkflows({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo
+                });
+                const prUpdateWorkflow = workflows.workflows.find(w => w.name === 'PR Update');
+
+                if (prUpdateWorkflow) {
+                  const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    workflow_id: prUpdateWorkflow.id,
+                    branch: pr.head.ref,
+                    status: 'completed',
+                    per_page: 1
+                  });
+
+                  if (runs.workflow_runs.length > 0) {
+                    runId = runs.workflow_runs[0].id.toString();
+                  }
+                }
+              }
+
+              core.setOutput('pr-number', prNumber);
+              core.setOutput('run-id', runId);
+              return;
+            }
+
+            const workflowRun = context.payload.workflow_run;
+            runId = workflowRun.id.toString();
+            const headSha = workflowRun.head_sha;
+
+            core.setOutput('run-id', runId);
+
+            if (workflowRun.pull_requests && workflowRun.pull_requests.length > 0) {
+              prNumber = workflowRun.pull_requests[0].number.toString();
+              core.setOutput('pr-number', prNumber);
+              return;
+            }
+
+            try {
+              const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: headSha
+              });
+
+              if (prs.length > 0) {
+                const openPr = prs.find(pr => pr.state === 'open') || prs[0];
+                core.setOutput('pr-number', openPr.number.toString());
+              } else {
+                core.setOutput('pr-number', '');
+              }
+            } catch (e) {
+              console.log('Error fetching PR:', e);
+              core.setOutput('pr-number', '');
+            }
+
+      - name: Analyze failed jobs
+        id: analyze
+        if: steps.get-context.outputs.run-id != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runId = '${{ steps.get-context.outputs.run-id }}';
+
+            const { data: jobs } = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: parseInt(runId),
+              filter: 'latest'
+            });
+
+            const failedJobs = jobs.jobs.filter(job => job.conclusion === 'failure');
+
+            if (failedJobs.length === 0) {
+              console.log('No failed jobs found');
+              core.setOutput('has-failures', 'false');
+              core.setOutput('triage-report', '');
+              return;
+            }
+
+            core.setOutput('has-failures', 'true');
+
+            const categories = {
+              lint: { name: 'Linting', jobs: [], icon: '🔍', suggestions: [] },
+              typecheck: { name: 'Type Checking', jobs: [], icon: '📝', suggestions: [] },
+              unit: { name: 'Unit Tests', jobs: [], icon: '🧪', suggestions: [] },
+              integration: { name: 'Integration Tests', jobs: [], icon: '🔗', suggestions: [] },
+              e2e: { name: 'E2E Tests', jobs: [], icon: '🎭', suggestions: [] },
+              build: { name: 'Build', jobs: [], icon: '🏗️', suggestions: [] },
+              security: { name: 'Security/Trust', jobs: [], icon: '🔒', suggestions: [] },
+              other: { name: 'Other', jobs: [], icon: '❓', suggestions: [] }
+            };
+
+            for (const job of failedJobs) {
+              const jobName = job.name.toLowerCase();
+              let category = 'other';
+
+              if (jobName.includes('lint')) {
+                category = 'lint';
+              } else if (jobName.includes('type') || jobName.includes('check-types')) {
+                category = 'typecheck';
+              } else if (jobName.includes('unit') && !jobName.includes('e2e')) {
+                category = 'unit';
+              } else if (jobName.includes('integration')) {
+                category = 'integration';
+              } else if (jobName.includes('e2e') || jobName.includes('playwright')) {
+                category = 'e2e';
+              } else if (jobName.includes('build') || jobName.includes('production')) {
+                category = 'build';
+              } else if (jobName.includes('trust') || jobName.includes('security')) {
+                category = 'security';
+              }
+
+              categories[category].jobs.push({
+                name: job.name,
+                url: job.html_url,
+                steps: job.steps?.filter(s => s.conclusion === 'failure').map(s => s.name) || []
+              });
+            }
+
+            const suggestions = {
+              lint: [
+                'Run `yarn biome check --write .` locally to auto-fix formatting issues',
+                'Run `yarn lint` to see all linting errors',
+                'Check for unused imports and variables'
+              ],
+              typecheck: [
+                'Run `yarn type-check:ci --force` locally to reproduce the error',
+                'Run `yarn prisma generate` if you see missing Prisma types',
+                'Check for `as any` usage - use proper types instead',
+                'Verify all imports use `import type` for type-only imports'
+              ],
+              unit: [
+                'Run `TZ=UTC yarn vitest run` locally to reproduce failures',
+                'Run specific test: `yarn vitest run path/to/file.test.ts`',
+                'Check if tests depend on timezone - use TZ=UTC'
+              ],
+              integration: [
+                'Run `VITEST_MODE=integration yarn test` locally',
+                'Ensure database is properly set up',
+                'Check for race conditions in async tests'
+              ],
+              e2e: [
+                'Run `PLAYWRIGHT_HEADLESS=1 yarn e2e path/to/file.e2e.ts` locally',
+                'Check the E2E report link in PR comments for detailed failure info',
+                'Look for flaky tests - retry locally to confirm'
+              ],
+              build: [
+                'Run `yarn build` locally to reproduce the error',
+                'Check for missing dependencies in package.json',
+                'Verify environment variables are properly configured'
+              ],
+              security: [
+                'External contributors need the `run-ci` label from a maintainer',
+                'Ensure you have proper repository permissions'
+              ],
+              other: [
+                'Check the job logs for specific error messages',
+                'Verify all required secrets and environment variables are set'
+              ]
+            };
+
+            let report = '## CI Triage Report\n\n';
+            report += 'The following CI checks have failed. Here is a categorized breakdown with suggestions for fixing each type of failure.\n\n';
+
+            let hasContent = false;
+            for (const [key, cat] of Object.entries(categories)) {
+              if (cat.jobs.length > 0) {
+                hasContent = true;
+                report += `### ${cat.icon} ${cat.name} Failures\n\n`;
+
+                for (const job of cat.jobs) {
+                  report += `- **[${job.name}](${job.url})**\n`;
+                  if (job.steps.length > 0) {
+                    report += `  - Failed steps: ${job.steps.join(', ')}\n`;
+                  }
+                }
+
+                report += '\n**Suggested fixes:**\n';
+                for (const suggestion of suggestions[key]) {
+                  report += `- ${suggestion}\n`;
+                }
+                report += '\n';
+              }
+            }
+
+            if (!hasContent) {
+              report += '_No categorized failures found._\n';
+            }
+
+            report += '---\n\n';
+            report += '### Quick Reference Commands\n\n';
+            report += '```bash\n';
+            report += '# Lint and format\n';
+            report += 'yarn biome check --write .\n\n';
+            report += '# Type check\n';
+            report += 'yarn type-check:ci --force\n\n';
+            report += '# Unit tests\n';
+            report += 'TZ=UTC yarn vitest run\n\n';
+            report += '# Integration tests\n';
+            report += 'VITEST_MODE=integration yarn test\n\n';
+            report += '# E2E tests (specific file)\n';
+            report += 'PLAYWRIGHT_HEADLESS=1 yarn e2e path/to/file.e2e.ts\n';
+            report += '```\n\n';
+
+            report += '> **Tip:** Always run `yarn type-check:ci --force` before pushing to catch type errors early.\n';
+
+            console.log('Generated triage report');
+            core.setOutput('triage-report', report);
+
+      - name: Find existing triage comment
+        if: steps.get-context.outputs.pr-number != '' && steps.analyze.outputs.has-failures == 'true'
+        uses: peter-evans/find-comment@v2
+        id: find-comment
+        with:
+          issue-number: ${{ steps.get-context.outputs.pr-number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "<!-- CI-TRIAGE-REPORT -->"
+
+      - name: Post or update triage comment
+        if: steps.get-context.outputs.pr-number != '' && steps.analyze.outputs.has-failures == 'true'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ steps.get-context.outputs.pr-number }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            <!-- CI-TRIAGE-REPORT -->
+            ${{ steps.analyze.outputs.triage-report }}
+
+            ---
+            _This report was automatically generated by the CI Triage workflow. [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})_
+
+  record-failure-patterns:
+    name: Record Failure Patterns
+    runs-on: ubuntu-latest
+    needs: triage
+    if: needs.triage.outputs.has-failures == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Analyze and record common failure patterns
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const patternsFile = '.github/ci-failure-patterns.json';
+            let patterns = { lastUpdated: '', failures: {} };
+
+            try {
+              if (fs.existsSync(patternsFile)) {
+                patterns = JSON.parse(fs.readFileSync(patternsFile, 'utf8'));
+              }
+            } catch (e) {
+              console.log('No existing patterns file or parse error, starting fresh');
+            }
+
+            const runId = '${{ github.event.workflow_run.id || github.run_id }}';
+
+            const { data: jobs } = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: parseInt(runId),
+              filter: 'latest'
+            });
+
+            const failedJobs = jobs.jobs.filter(job => job.conclusion === 'failure');
+
+            for (const job of failedJobs) {
+              const jobName = job.name;
+              if (!patterns.failures[jobName]) {
+                patterns.failures[jobName] = { count: 0, lastSeen: '', failedSteps: {} };
+              }
+
+              patterns.failures[jobName].count++;
+              patterns.failures[jobName].lastSeen = new Date().toISOString();
+
+              for (const step of (job.steps || [])) {
+                if (step.conclusion === 'failure') {
+                  if (!patterns.failures[jobName].failedSteps[step.name]) {
+                    patterns.failures[jobName].failedSteps[step.name] = 0;
+                  }
+                  patterns.failures[jobName].failedSteps[step.name]++;
+                }
+              }
+            }
+
+            patterns.lastUpdated = new Date().toISOString();
+
+            console.log('Failure patterns recorded:');
+            console.log(JSON.stringify(patterns, null, 2));
+
+            const sortedFailures = Object.entries(patterns.failures)
+              .sort((a, b) => b[1].count - a[1].count)
+              .slice(0, 10);
+
+            if (sortedFailures.length > 0) {
+              console.log('\n=== Top 10 Most Common CI Failures ===');
+              for (const [name, data] of sortedFailures) {
+                console.log(`${name}: ${data.count} failures`);
+                const topSteps = Object.entries(data.failedSteps)
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 3);
+                for (const [step, count] of topSteps) {
+                  console.log(`  - ${step}: ${count} times`);
+                }
+              }
+            }
