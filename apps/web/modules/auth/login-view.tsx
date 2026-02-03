@@ -1,17 +1,9 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import classNames from "classnames";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { SAMLLogin } from "@calcom/features/auth/SAMLLogin";
+import process from "node:process";
 import { ErrorCode } from "@calcom/features/auth/lib/ErrorCode";
 import { LastUsed, useLastUsed } from "@calcom/features/auth/lib/hooks/useLastUsed";
+import { SAMLLogin } from "@calcom/features/auth/SAMLLogin";
 import { HOSTED_CAL_FEATURES, WEBAPP_URL, WEBSITE_URL } from "@calcom/lib/constants";
 import { emailRegex } from "@calcom/lib/emailSchema";
 import { getSafeRedirectUrl } from "@calcom/lib/getSafeRedirectUrl";
@@ -21,15 +13,20 @@ import { trpc } from "@calcom/trpc/react";
 import { Alert } from "@calcom/ui/components/alert";
 import { Button } from "@calcom/ui/components/button";
 import { EmailField, PasswordField } from "@calcom/ui/components/form";
-
-import type { inferSSRProps } from "@lib/types/inferSSRProps";
-
 import AddToHomescreen from "@components/AddToHomescreen";
 import BackupCode from "@components/auth/BackupCode";
 import TwoFactor from "@components/auth/TwoFactor";
 import AuthContainer from "@components/ui/AuthContainer";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { inferSSRProps } from "@lib/types/inferSSRProps";
 import type { getServerSideProps } from "@server/lib/auth/login/getServerSideProps";
+import classNames from "classnames";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface LoginValues {
   email: string;
@@ -177,7 +174,7 @@ export default function Login({
     : isSAMLLoginEnabled && !isPending && data?.connectionExists;
 
   return (
-    <div className="text-emphasis min-h-screen [--cal-brand-emphasis:#101010] [--cal-brand-subtle:#9CA3AF] [--cal-brand-text:white] [--cal-brand:#111827] dark:[--cal-brand-emphasis:#e1e1e1] dark:[--cal-brand-text:black] dark:[--cal-brand:white]">
+    <div className="text-emphasis min-h-screen cricket-field-bg [--cal-brand-emphasis:#1a5c3d] [--cal-brand-subtle:#6b9980] [--cal-brand-text:#faf8f0] [--cal-brand:#2d7a4a] dark:[--cal-brand-emphasis:#7ac99a] dark:[--cal-brand-text:#0d1f14] dark:[--cal-brand:#5cb87a]">
       <AuthContainer
         showLogo
         heading={twoFactorRequired ? t("2fa_code") : t("welcome_back")}
@@ -187,8 +184,8 @@ export default function Login({
               ? TwoFactorFooter
               : ExternalTotpFooter
             : process.env.NEXT_PUBLIC_DISABLE_SIGNUP !== "true"
-            ? LoginFooter
-            : null
+              ? LoginFooter
+              : null
         }>
         <FormProvider {...methods}>
           {!twoFactorRequired && (

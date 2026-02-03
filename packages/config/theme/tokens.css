@@ -238,100 +238,108 @@
 
   --radius-none: 0px;
 
-  /* Background Standard */
-  --cal-bg-emphasis: hsla(220, 13%, 91%, 1);
-  --cal-bg: hsla(0, 0%, 100%, 1);
-  --cal-bg-subtle: hsla(220, 14%, 94%, 1);
-  --cal-bg-muted: hsla(210, 20%, 97%, 1);
-  --cal-bg-inverted: hsla(210, 30%, 4%, 1);
+  /* ========================================
+     CRICKET THEME - Inspired by the sport
+     Primary: Cricket Field Green
+     Secondary: Cricket Ball Red  
+     Accent: Cricket Bat Golden/Tan
+     Background: Cricket Whites (Cream)
+     ======================================== */
 
-  /* Background Primary */
-  --cal-bg-primary: hsla(214, 30%, 16%, 1);
-  --cal-bg-primary-emphasis: hsla(220, 6%, 25%, 1);
-  --cal-bg-primary-muted: hsla(220, 14%, 94%, 1);
+  /* Background Standard - Cricket Whites/Cream tones */
+  --cal-bg-emphasis: hsla(120, 15%, 88%, 1);
+  --cal-bg: hsla(45, 30%, 98%, 1);
+  --cal-bg-subtle: hsla(90, 20%, 95%, 1);
+  --cal-bg-muted: hsla(60, 25%, 97%, 1);
+  --cal-bg-inverted: hsla(140, 50%, 12%, 1);
 
-  /* Background Brand */
-  --cal-bg-brand: hsla(214, 30%, 16%, 1);
-  --cal-bg-brand-emphasis: hsla(220, 6%, 25%, 1);
-  --cal-bg-brand-muted: hsla(220, 14%, 94%, 1);
+  /* Background Primary - Cricket Field Green */
+  --cal-bg-primary: hsla(140, 60%, 25%, 1);
+  --cal-bg-primary-emphasis: hsla(140, 55%, 18%, 1);
+  --cal-bg-primary-muted: hsla(120, 30%, 92%, 1);
+
+  /* Background Brand - Cricket Field Green */
+  --cal-bg-brand: hsla(140, 60%, 25%, 1);
+  --cal-bg-brand-emphasis: hsla(140, 55%, 18%, 1);
+  --cal-bg-brand-muted: hsla(120, 30%, 92%, 1);
 
   /* Background Semantic */
-  --cal-bg-semantic-info-subtle: hsla(212, 88%, 97%, 1);
-  --cal-bg-semantic-info-emphasis: hsla(236, 80%, 25%, 1);
-  --cal-bg-semantic-success-subtle: hsla(167, 54%, 93%, 1);
-  --cal-bg-semantic-success-emphasis: hsla(158, 74%, 38%, 1);
-  --cal-bg-semantic-attention-subtle: hsla(34, 100%, 92%, 1);
-  --cal-bg-semantic-attention-emphasis: hsla(15, 79%, 34%, 1);
-  --cal-bg-semantic-error-subtle: hsla(0, 93%, 94%, 1);
-  --cal-bg-semantic-error-emphasis: hsla(0, 63%, 24%, 1);
+  --cal-bg-semantic-info-subtle: hsla(200, 70%, 95%, 1);
+  --cal-bg-semantic-info-emphasis: hsla(200, 80%, 30%, 1);
+  --cal-bg-semantic-success-subtle: hsla(140, 50%, 92%, 1);
+  --cal-bg-semantic-success-emphasis: hsla(140, 70%, 35%, 1);
+  --cal-bg-semantic-attention-subtle: hsla(35, 90%, 92%, 1);
+  --cal-bg-semantic-attention-emphasis: hsla(25, 85%, 40%, 1);
+  --cal-bg-semantic-error-subtle: hsla(0, 80%, 94%, 1);
+  --cal-bg-semantic-error-emphasis: hsla(0, 70%, 35%, 1);
 
-  /* Background Visualization */
-  --cal-bg-visualization-1-subtle: hsla(326, 78%, 95%, 1);
-  --cal-bg-visualization-1-emphasis: hsla(330, 81%, 60%, 1);
-  --cal-bg-visualization-2-subtle: hsla(256, 86%, 91%, 1);
-  --cal-bg-visualization-2-emphasis: hsla(256, 85%, 57%, 1);
-  --cal-bg-visualization-3-subtle: hsla(217, 87%, 91%, 1);
-  --cal-bg-visualization-3-emphasis: hsla(235, 100%, 63%, 1);
-  --cal-bg-visualization-4-subtle: hsla(167, 54%, 93%, 1);
-  --cal-bg-visualization-4-emphasis: hsla(158, 74%, 38%, 1);
-  --cal-bg-visualization-5-subtle: hsla(55, 97%, 88%, 1);
-  --cal-bg-visualization-5-emphasis: hsla(45, 93%, 47%, 1);
-  --cal-bg-visualization-6-subtle: hsla(34, 100%, 92%, 1);
-  --cal-bg-visualization-6-emphasis: hsla(25, 95%, 53%, 1);
-  --cal-bg-visualization-7-subtle: hsla(0, 96%, 89%, 1);
-  --cal-bg-visualization-7-emphasis: hsla(0, 84%, 60%, 1);
+  /* Background Visualization - Cricket-inspired palette */
+  --cal-bg-visualization-1-subtle: hsla(140, 50%, 92%, 1);
+  --cal-bg-visualization-1-emphasis: hsla(140, 60%, 35%, 1);
+  --cal-bg-visualization-2-subtle: hsla(0, 70%, 92%, 1);
+  --cal-bg-visualization-2-emphasis: hsla(0, 75%, 45%, 1);
+  --cal-bg-visualization-3-subtle: hsla(35, 80%, 92%, 1);
+  --cal-bg-visualization-3-emphasis: hsla(35, 85%, 45%, 1);
+  --cal-bg-visualization-4-subtle: hsla(200, 60%, 92%, 1);
+  --cal-bg-visualization-4-emphasis: hsla(200, 70%, 40%, 1);
+  --cal-bg-visualization-5-subtle: hsla(45, 90%, 90%, 1);
+  --cal-bg-visualization-5-emphasis: hsla(45, 85%, 50%, 1);
+  --cal-bg-visualization-6-subtle: hsla(25, 85%, 92%, 1);
+  --cal-bg-visualization-6-emphasis: hsla(25, 90%, 50%, 1);
+  --cal-bg-visualization-7-subtle: hsla(160, 50%, 90%, 1);
+  --cal-bg-visualization-7-emphasis: hsla(160, 60%, 40%, 1);
 
-  /* Legacy Background Components */
-  --cal-bg-info: hsla(221, 91%, 93%, 1);
-  --cal-bg-success: hsla(142, 76%, 94%, 1);
-  --cal-bg-attention: hsla(33, 100%, 92%, 1);
-  --cal-bg-error: hsla(3, 66%, 93%, 1);
-  --cal-bg-dark-error: hsla(2, 55%, 30%, 1);
-  --cal-bg-launch-dark: hsla(242, 53%, 10%, 1);
+  /* Legacy Background Components - Cricket themed */
+  --cal-bg-info: hsla(200, 70%, 92%, 1);
+  --cal-bg-success: hsla(140, 60%, 92%, 1);
+  --cal-bg-attention: hsla(35, 85%, 92%, 1);
+  --cal-bg-error: hsla(0, 70%, 92%, 1);
+  --cal-bg-dark-error: hsla(0, 60%, 30%, 1);
+  --cal-bg-launch-dark: hsla(140, 50%, 12%, 1);
 
-  /* Borders */
-  --cal-border-emphasis: hsla(218, 11%, 65%, 1);
-  --cal-border: hsla(216, 12%, 84%, 1);
-  --cal-border-subtle: hsla(220, 13%, 91%, 1);
-  --cal-border-muted: hsla(220, 14%, 94%, 1);
-  --cal-border-error: hsla(0, 96%, 89%, 1);
-  --cal-border-semantic-error: hsla(0, 96%, 89%, 1);
-  --cal-border-semantic-attention-subtle: hsla(32, 98%, 83%, 1);
-  --cal-border-semantic-error-subtle: hsla(0, 96%, 89%, 1);
+  /* Borders - Cricket field green tones */
+  --cal-border-emphasis: hsla(140, 30%, 50%, 1);
+  --cal-border: hsla(120, 20%, 75%, 1);
+  --cal-border-subtle: hsla(90, 15%, 85%, 1);
+  --cal-border-muted: hsla(60, 20%, 92%, 1);
+  --cal-border-error: hsla(0, 70%, 85%, 1);
+  --cal-border-semantic-error: hsla(0, 70%, 85%, 1);
+  --cal-border-semantic-attention-subtle: hsla(35, 80%, 80%, 1);
+  --cal-border-semantic-error-subtle: hsla(0, 70%, 85%, 1);
   --cal-border-booker: var(--cal-border-subtle);
 
-  /* Content/Text Standard */
-  --cal-text-emphasis: hsla(210, 30%, 4%, 1);
-  --cal-text: hsla(220, 6%, 25%, 1);
-  --cal-text-subtle: hsla(220, 9%, 46%, 1);
-  --cal-text-muted: hsla(218, 11%, 65%, 1);
-  --cal-text-inverted: hsla(0, 0%, 100%, 1);
+  /* Content/Text Standard - Rich cricket tones */
+  --cal-text-emphasis: hsla(140, 50%, 10%, 1);
+  --cal-text: hsla(140, 30%, 20%, 1);
+  --cal-text-subtle: hsla(140, 20%, 40%, 1);
+  --cal-text-muted: hsla(120, 15%, 55%, 1);
+  --cal-text-inverted: hsla(45, 30%, 98%, 1);
 
-  /* Content/Text Semantic */
-  --cal-text-semantic-info: hsla(236, 80%, 25%, 1);
-  --cal-text-semantic-success: hsla(150, 84%, 22%, 1);
-  --cal-text-semantic-attention: hsla(15, 79%, 34%, 1);
-  --cal-text-semantic-error: hsla(0, 63%, 24%, 1);
+  /* Content/Text Semantic - Cricket themed */
+  --cal-text-semantic-info: hsla(200, 70%, 30%, 1);
+  --cal-text-semantic-success: hsla(140, 70%, 25%, 1);
+  --cal-text-semantic-attention: hsla(25, 80%, 35%, 1);
+  --cal-text-semantic-error: hsla(0, 65%, 30%, 1);
 
-  /* Content/Text Visualization */
-  --cal-text-visualization-1: hsla(332, 79%, 25%, 1);
-  --cal-text-visualization-2: hsla(270, 91%, 25%, 1);
-  --cal-text-visualization-3: hsla(217, 91%, 25%, 1);
-  --cal-text-visualization-4: hsla(142, 71%, 25%, 1);
-  --cal-text-visualization-5: hsla(45, 93%, 25%, 1);
-  --cal-text-visualization-6: hsla(24, 95%, 25%, 1);
-  --cal-text-visualization-7: hsla(0, 84%, 25%, 1);
+  /* Content/Text Visualization - Cricket themed */
+  --cal-text-visualization-1: hsla(140, 60%, 25%, 1);
+  --cal-text-visualization-2: hsla(0, 70%, 30%, 1);
+  --cal-text-visualization-3: hsla(35, 80%, 30%, 1);
+  --cal-text-visualization-4: hsla(200, 65%, 30%, 1);
+  --cal-text-visualization-5: hsla(45, 80%, 30%, 1);
+  --cal-text-visualization-6: hsla(25, 85%, 30%, 1);
+  --cal-text-visualization-7: hsla(160, 55%, 30%, 1);
 
-  /* Legacy Content/Text Components */
-  --cal-text-info: hsla(225, 57%, 33%, 1);
-  --cal-text-success: hsla(144, 34%, 24%, 1);
-  --cal-text-attention: hsla(16, 62%, 28%, 1);
-  --cal-text-error: hsla(0, 63%, 31%, 1);
+  /* Legacy Content/Text Components - Cricket themed */
+  --cal-text-info: hsla(200, 65%, 30%, 1);
+  --cal-text-success: hsla(140, 60%, 25%, 1);
+  --cal-text-attention: hsla(25, 75%, 30%, 1);
+  --cal-text-error: hsla(0, 60%, 35%, 1);
 
-  /* Brand */
-  --cal-brand: hsla(221, 39%, 11%, 1);
-  --cal-brand-emphasis: hsla(0, 0%, 6%, 1);
-  --cal-brand-text: hsla(0, 0%, 100%, 1);
+  /* Brand - Cricket Field Green (Primary) */
+  --cal-brand: hsla(140, 60%, 28%, 1);
+  --cal-brand-emphasis: hsla(140, 55%, 20%, 1);
+  --cal-brand-text: hsla(45, 30%, 98%, 1);
 
   /* Box Shadows */
   --shadow-dropdown: 0px 5px 20px 0px rgba(0, 0, 0, 0.10), 0px 10px 40px 0px rgba(0, 0, 0, 0.03);
@@ -353,111 +361,123 @@
   --shadow-button-solid-brand-focused: 0px 0px 0px 1px rgba(255, 255, 255, 0.40), 0px 0px 0px 2px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.10), 0px 2px 3px 0px rgba(0, 0, 0, 0.08), 1px 4px 8px 0px rgba(0, 0, 0, 0.12), 0px -3px 2px 0px rgba(0, 0, 0, 0.10) inset, 0px 2px 0.4px 0px rgba(255, 255, 255, 0.24) inset;
   --shadow-button-outline-red-focused: 0px 0px 0px 1px rgba(255, 255, 255, 0.32), 0px 0px 0px 2px rgba(220, 38, 38, 0.15);
 
-  /* Fill Colors */
-  --fill-emphasis: var(--cal-text-emphasis, #111827);
-  --fill-default: var(--cal-text, #374151);
-  --fill-subtle: var(--cal-text-subtle, #6B7280);
-  --fill-muted: var(--cal-text-muted, #9CA3AF);
-  --fill-inverted: var(--cal-text-inverted, white);
-  --fill-info: var(--cal-text-info, #253985);
-  --fill-success: var(--cal-text-success, #285231);
-  --fill-attention: var(--cal-text-attention, #73321B);
-  --fill-error: var(--cal-text-error, #752522);
+  /* Fill Colors - Cricket themed */
+  --fill-emphasis: var(--cal-text-emphasis, #0d2618);
+  --fill-default: var(--cal-text, #1a3d2a);
+  --fill-subtle: var(--cal-text-subtle, #3d6b52);
+  --fill-muted: var(--cal-text-muted, #6b9980);
+  --fill-inverted: var(--cal-text-inverted, #faf8f0);
+  --fill-info: var(--cal-text-info, #1a5c7a);
+  --fill-success: var(--cal-text-success, #1a5c3d);
+  --fill-attention: var(--cal-text-attention, #8c4a1a);
+  --fill-error: var(--cal-text-error, #8c2a2a);
   --fill-brand: var(--cal-brand-text);
+
+  /* Cricket Theme Custom Properties */
+  --cricket-field-green: hsla(140, 60%, 28%, 1);
+  --cricket-ball-red: hsla(0, 75%, 40%, 1);
+  --cricket-bat-tan: hsla(35, 70%, 55%, 1);
+  --cricket-stumps-cream: hsla(45, 40%, 90%, 1);
+  --cricket-pitch-brown: hsla(30, 50%, 45%, 1);
 }
 
 .dark {
-  /* Background Standard */
-  --cal-bg-emphasis: hsla(0, 0%, 25%, 1);
-  --cal-bg: hsla(0, 0%, 6%, 1);
-  --cal-bg-subtle: hsla(0, 0%, 15%, 1);
-  --cal-bg-muted: hsla(0, 0%, 9%, 1);
-  --cal-bg-inverted: hsla(0, 0%, 98%, 1);
+  /* ========================================
+     CRICKET THEME - Dark Mode
+     Night match atmosphere with stadium lights
+     ======================================== */
 
-  /* Background Primary */
-  --cal-bg-primary: hsla(0, 0%, 96%, 1);
-  --cal-bg-primary-emphasis: hsla(0, 0%, 64%, 1);
-  --cal-bg-primary-muted: hsla(0, 0%, 15%, 1);
+  /* Background Standard - Dark cricket field at night */
+  --cal-bg-emphasis: hsla(140, 30%, 20%, 1);
+  --cal-bg: hsla(140, 40%, 6%, 1);
+  --cal-bg-subtle: hsla(140, 35%, 12%, 1);
+  --cal-bg-muted: hsla(140, 30%, 8%, 1);
+  --cal-bg-inverted: hsla(45, 30%, 95%, 1);
 
-  /* Background Brand */
-  --cal-bg-brand: hsla(0, 0%, 98%, 1);
-  --cal-bg-brand-emphasis: hsla(0, 0%, 96%, 1);
-  --cal-bg-brand-muted: hsla(0, 0%, 96%, 1);
+  /* Background Primary - Light green for dark mode */
+  --cal-bg-primary: hsla(140, 50%, 75%, 1);
+  --cal-bg-primary-emphasis: hsla(140, 45%, 60%, 1);
+  --cal-bg-primary-muted: hsla(140, 35%, 15%, 1);
+
+  /* Background Brand - Light green for dark mode */
+  --cal-bg-brand: hsla(140, 50%, 75%, 1);
+  --cal-bg-brand-emphasis: hsla(140, 45%, 65%, 1);
+  --cal-bg-brand-muted: hsla(140, 40%, 20%, 1);
 
   /* Background Semantic */
-  --cal-bg-semantic-info-subtle: hsla(236, 80%, 8%, 1);
-  --cal-bg-semantic-info-emphasis: hsla(229, 90%, 74%, 1);
-  --cal-bg-semantic-success-subtle: hsla(148, 88%, 16%, 1);
-  --cal-bg-semantic-success-emphasis: hsla(158, 74%, 38%, 1);
-  --cal-bg-semantic-attention-subtle: hsla(21, 86%, 8%, 1);
-  --cal-bg-semantic-attention-emphasis: hsla(27, 96%, 61%, 1);
-  --cal-bg-semantic-error-subtle: hsla(0, 70%, 8%, 1);
-  --cal-bg-semantic-error-emphasis: hsla(0, 91%, 71%, 1);
+  --cal-bg-semantic-info-subtle: hsla(200, 60%, 12%, 1);
+  --cal-bg-semantic-info-emphasis: hsla(200, 70%, 65%, 1);
+  --cal-bg-semantic-success-subtle: hsla(140, 50%, 15%, 1);
+  --cal-bg-semantic-success-emphasis: hsla(140, 60%, 50%, 1);
+  --cal-bg-semantic-attention-subtle: hsla(35, 70%, 12%, 1);
+  --cal-bg-semantic-attention-emphasis: hsla(35, 80%, 55%, 1);
+  --cal-bg-semantic-error-subtle: hsla(0, 60%, 12%, 1);
+  --cal-bg-semantic-error-emphasis: hsla(0, 70%, 60%, 1);
 
-  /* Background Visualization */
-  --cal-bg-visualization-1-subtle: hsla(336, 74%, 35%, 1);
-  --cal-bg-visualization-1-emphasis: hsla(330, 81%, 60%, 1);
-  --cal-bg-visualization-2-subtle: hsla(252, 83%, 23%, 1);
-  --cal-bg-visualization-2-emphasis: hsla(256, 85%, 57%, 1);
-  --cal-bg-visualization-3-subtle: hsla(236, 74%, 35%, 1);
-  --cal-bg-visualization-3-emphasis: hsla(235, 100%, 63%, 1);
-  --cal-bg-visualization-4-subtle: hsla(150, 84%, 22%, 1);
-  --cal-bg-visualization-4-emphasis: hsla(158, 74%, 38%, 1);
-  --cal-bg-visualization-5-subtle: hsla(28, 73%, 26%, 1);
-  --cal-bg-visualization-5-emphasis: hsla(45, 93%, 47%, 1);
-  --cal-bg-visualization-6-subtle: hsla(15, 75%, 23%, 1);
-  --cal-bg-visualization-6-emphasis: hsla(25, 95%, 53%, 1);
-  --cal-bg-visualization-7-subtle: hsla(0, 70%, 35%, 1);
-  --cal-bg-visualization-7-emphasis: hsla(0, 84%, 60%, 1);
+  /* Background Visualization - Cricket themed dark */
+  --cal-bg-visualization-1-subtle: hsla(140, 45%, 20%, 1);
+  --cal-bg-visualization-1-emphasis: hsla(140, 55%, 50%, 1);
+  --cal-bg-visualization-2-subtle: hsla(0, 55%, 20%, 1);
+  --cal-bg-visualization-2-emphasis: hsla(0, 65%, 55%, 1);
+  --cal-bg-visualization-3-subtle: hsla(35, 60%, 20%, 1);
+  --cal-bg-visualization-3-emphasis: hsla(35, 75%, 55%, 1);
+  --cal-bg-visualization-4-subtle: hsla(200, 50%, 18%, 1);
+  --cal-bg-visualization-4-emphasis: hsla(200, 60%, 50%, 1);
+  --cal-bg-visualization-5-subtle: hsla(45, 65%, 18%, 1);
+  --cal-bg-visualization-5-emphasis: hsla(45, 80%, 55%, 1);
+  --cal-bg-visualization-6-subtle: hsla(25, 65%, 18%, 1);
+  --cal-bg-visualization-6-emphasis: hsla(25, 80%, 55%, 1);
+  --cal-bg-visualization-7-subtle: hsla(160, 45%, 18%, 1);
+  --cal-bg-visualization-7-emphasis: hsla(160, 55%, 50%, 1);
 
-  /* Legacy Background Components */
-  --cal-bg-info: hsla(228, 56%, 33%, 1);
-  --cal-bg-success: hsla(133, 34%, 24%, 1);
-  --cal-bg-attention: hsla(16, 62%, 28%, 1);
-  --cal-bg-error: hsla(2, 55%, 30%, 1);
-  --cal-bg-dark-error: hsla(2, 55%, 30%, 1);
-  --cal-bg-launch-dark: hsla(242, 53%, 10%, 1);
+  /* Legacy Background Components - Cricket dark */
+  --cal-bg-info: hsla(200, 55%, 25%, 1);
+  --cal-bg-success: hsla(140, 50%, 22%, 1);
+  --cal-bg-attention: hsla(35, 60%, 25%, 1);
+  --cal-bg-error: hsla(0, 55%, 25%, 1);
+  --cal-bg-dark-error: hsla(0, 55%, 25%, 1);
+  --cal-bg-launch-dark: hsla(140, 40%, 8%, 1);
 
-  /* Border Standard */
-  --cal-border: hsla(0, 0%, 30%, 1);
-  --cal-border-muted: hsla(0, 0%, 9%, 1);
-  --cal-border-subtle: hsla(0, 0%, 15%, 1);
-  --cal-border-emphasis: hsla(0, 0%, 45%, 1);
-  --cal-border-semantic-error: hsla(0, 63%, 24%, 1);
-  --cal-border-semantic-attention-subtle: hsla(15, 75%, 23%, 1);
-  --cal-border-semantic-error-subtle: hsla(0, 63%, 24%, 1);
-  --cal-border-error: hsla(0, 63%, 24%, 1);
+  /* Border Standard - Cricket dark borders */
+  --cal-border: hsla(140, 25%, 28%, 1);
+  --cal-border-muted: hsla(140, 30%, 10%, 1);
+  --cal-border-subtle: hsla(140, 30%, 18%, 1);
+  --cal-border-emphasis: hsla(140, 25%, 40%, 1);
+  --cal-border-semantic-error: hsla(0, 55%, 30%, 1);
+  --cal-border-semantic-attention-subtle: hsla(35, 60%, 25%, 1);
+  --cal-border-semantic-error-subtle: hsla(0, 55%, 25%, 1);
+  --cal-border-error: hsla(0, 55%, 30%, 1);
   --cal-border-booker: var(--cal-border-subtle);
 
-  /* Content/Text Standard */
-  --cal-text-emphasis: hsla(0, 0%, 98%, 1);
-  --cal-text: hsla(0, 0%, 83%, 1);
-  --cal-text-subtle: hsla(0, 0%, 64%, 1);
-  --cal-text-muted: hsla(0, 0%, 64%, 1);
-  --cal-text-inverted: hsla(0, 0%, 0%, 1);
+  /* Content/Text Standard - Cricket dark text */
+  --cal-text-emphasis: hsla(45, 30%, 95%, 1);
+  --cal-text: hsla(120, 20%, 80%, 1);
+  --cal-text-subtle: hsla(120, 15%, 60%, 1);
+  --cal-text-muted: hsla(120, 15%, 50%, 1);
+  --cal-text-inverted: hsla(140, 40%, 8%, 1);
 
-  /* Content/Text Semantic */
-  --cal-text-semantic-info: hsla(229, 90%, 74%, 1);
-  --cal-text-semantic-success: hsla(161, 49%, 54%, 1);
-  --cal-text-semantic-attention: hsla(27, 96%, 61%, 1);
-  --cal-text-semantic-error: hsla(0, 91%, 71%, 1);
-  --cal-text-semantic-info-emphasis: hsla(217, 91%, 25%, 1);
-  --cal-text-semantic-success-emphasis: hsla(142, 71%, 25%, 1);
-  --cal-text-semantic-attention-emphasis: hsla(24, 95%, 25%, 1);
-  --cal-text-semantic-error-emphasis: hsla(0, 84%, 25%, 1);
+  /* Content/Text Semantic - Cricket dark */
+  --cal-text-semantic-info: hsla(200, 70%, 70%, 1);
+  --cal-text-semantic-success: hsla(140, 55%, 60%, 1);
+  --cal-text-semantic-attention: hsla(35, 80%, 60%, 1);
+  --cal-text-semantic-error: hsla(0, 70%, 65%, 1);
+  --cal-text-semantic-info-emphasis: hsla(200, 60%, 30%, 1);
+  --cal-text-semantic-success-emphasis: hsla(140, 55%, 30%, 1);
+  --cal-text-semantic-attention-emphasis: hsla(35, 70%, 30%, 1);
+  --cal-text-semantic-error-emphasis: hsla(0, 60%, 30%, 1);
 
-  /* Legacy Content/Text Components */
-  --cal-text-info: hsla(218, 83%, 93%, 1);
-  --cal-text-success: hsla(134, 76%, 94%, 1);
-  --cal-text-attention: hsla(37, 86%, 92%, 1);
-  --cal-text-error: hsla(3, 66%, 93%, 1);
+  /* Legacy Content/Text Components - Cricket dark */
+  --cal-text-info: hsla(200, 70%, 85%, 1);
+  --cal-text-success: hsla(140, 60%, 85%, 1);
+  --cal-text-attention: hsla(35, 80%, 85%, 1);
+  --cal-text-error: hsla(0, 65%, 85%, 1);
 
-  /* Brand */
-  --cal-brand: hsla(0, 0%, 100%, 1);
-  --cal-brand-emphasis: hsla(218, 11%, 65%, 1);
-  --cal-brand-text: hsla(0, 0%, 0%, 1);
+  /* Brand - Cricket light green for dark mode */
+  --cal-brand: hsla(140, 50%, 70%, 1);
+  --cal-brand-emphasis: hsla(140, 45%, 55%, 1);
+  --cal-brand-text: hsla(140, 40%, 8%, 1);
 
-  /* Fill Colors */
+  /* Fill Colors - Cricket dark */
   --fill-emphasis: var(--cal-text-emphasis);
   --fill-default: var(--cal-text);
   --fill-subtle: var(--cal-text-subtle);
