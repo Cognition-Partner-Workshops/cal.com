@@ -5,5 +5,5 @@ export type TFindInputSchema = {
 };
 
 export const ZFindInputSchema: z.ZodType<TFindInputSchema> = z.object({
-  bookingUid: z.string().optional(),
+  bookingUid: z.string().uuid().optional(),
 });

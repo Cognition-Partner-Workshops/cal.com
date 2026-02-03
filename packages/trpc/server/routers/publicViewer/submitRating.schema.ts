@@ -7,7 +7,7 @@ export type TSubmitRatingInputSchema = {
 };
 
 export const ZSubmitRatingInputSchema: z.ZodType<TSubmitRatingInputSchema> = z.object({
-  bookingUid: z.string(),
-  rating: z.number(),
-  comment: z.string().optional(),
+  bookingUid: z.string().uuid(),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().max(500).optional(),
 });
