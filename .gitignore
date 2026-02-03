@@ -111,3 +111,8 @@ packages/**/.yarn/ci-cache/
 
 # Test credentials
 TEST_CREDENTIALS.md
+selenium-tests/.classpath
+selenium-tests/.project
+selenium-tests/.settings/
+selenium-tests/target/
+selenium-tests/src/test/resources/config.properties

@@ -1,0 +1,17 @@
+# Cal.com Selenium Test Configuration
+# Copy this file to config.properties and update with your values
+
+# Base URL for the application
+base.url=http://localhost:3000
+
+# Test user credentials (see TEST_CREDENTIALS.md for available test users)
+test.email=your-test-email@example.com
+test.password=your-test-password
+
+# Browser configuration
+browser=chrome
+headless=true
+
+# Wait times (in seconds)
+implicit.wait=10
+explicit.wait=15
