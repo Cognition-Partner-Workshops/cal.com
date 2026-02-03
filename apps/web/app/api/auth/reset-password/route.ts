@@ -1,3 +1,4 @@
+import { compare } from "bcryptjs";
 import { defaultResponderForAppDir } from "app/api/defaultResponderForAppDir";
 import { parseRequestData } from "app/api/parseRequestData";
 import { cookies } from "next/headers";
@@ -13,6 +14,8 @@ import { piiHasher } from "@calcom/lib/server/PiiHasher";
 import prisma from "@calcom/prisma";
 import { IdentityProvider } from "@calcom/prisma/enums";
 
+const PASSWORD_HISTORY_LIMIT = 2;
+
 const passwordResetRequestSchema = z.object({
   csrfToken: z.string(),
   password: z.string().refine(validPassword, () => ({
@@ -20,6 +23,48 @@ const passwordResetRequestSchema = z.object({
   })),
   requestId: z.string(), // format doesn't matter.
 });
+
+async function checkPasswordHistory(
+  rawPassword: string,
+  currentPasswordHash: string | null,
+  passwordHistory: Array<{ hash: string }>
+): Promise<boolean> {
+  const passwordsToCheck: string[] = [];
+  if (currentPasswordHash) {
+    passwordsToCheck.push(currentPasswordHash);
+  }
+  passwordsToCheck.push(...passwordHistory.map((ph) => ph.hash));
+
+  for (const oldHash of passwordsToCheck) {
+    const isMatch = await compare(rawPassword, oldHash);
+    if (isMatch) {
+      return true;
+    }
+  }
+  return false;
+}
+
+async function updatePasswordHistory(userId: number, currentPasswordHash: string): Promise<void> {
+  await prisma.passwordHistory.create({
+    data: {
+      hash: currentPasswordHash,
+      userId: userId,
+    },
+  });
+
+  const oldEntries = await prisma.passwordHistory.findMany({
+    where: { userId: userId },
+    orderBy: { createdAt: "desc" },
+    skip: PASSWORD_HISTORY_LIMIT,
+    select: { id: true },
+  });
+
+  if (oldEntries.length > 0) {
+    await prisma.passwordHistory.deleteMany({
+      where: { id: { in: oldEntries.map((e) => e.id) } },
+    });
+  }
+}
 
 async function handler(req: NextRequest) {
   const body = await parseRequestData(req);
@@ -36,7 +81,6 @@ async function handler(req: NextRequest) {
     return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
   }
 
-  // token verified, delete the cookie / a resubmit on failure requires a new csrf token.
   cookieStore.delete("calcom.csrf_token");
 
   const remoteIp = getIP(req);
@@ -45,29 +89,53 @@ async function handler(req: NextRequest) {
     identifier: `api:reset-password:${piiHasher.hash(remoteIp)}`,
   });
 
-  // Note: There is a low, very low chance that a password request stays valid long enough
-  // to brute force 3.8126967e+40 options, but rate limiting provides additional protection.
   const maybeRequest = await prisma.resetPasswordRequest.findFirstOrThrow({
     where: {
       id: rawRequestId,
-      expires: {
-        gt: new Date(),
-      },
+      expires: { gt: new Date() },
     },
+    select: { email: true },
+  });
+
+  const user = await prisma.user.findUnique({
+    where: { email: maybeRequest.email },
     select: {
-      email: true,
+      id: true,
+      password: { select: { hash: true } },
+      passwordHistory: {
+        orderBy: { createdAt: "desc" },
+        take: PASSWORD_HISTORY_LIMIT,
+        select: { hash: true },
+      },
     },
   });
 
+  if (!user) {
+    return NextResponse.json({}, { status: 404 });
+  }
+
+  const isPasswordReused = await checkPasswordHistory(
+    rawPassword,
+    user.password?.hash ?? null,
+    user.passwordHistory
+  );
+
+  if (isPasswordReused) {
+    return NextResponse.json(
+      { error: "Cannot reuse your last 2 passwords. Please choose a different password." },
+      { status: 400 }
+    );
+  }
+
   const hashedPassword = await hashPassword(rawPassword);
-  // this can fail if a password request has been made for an email that has since changed or-
-  // never existed within Cal. In this case we do not want to disclose the email's existence.
-  // instead, we just return 404
+
   try {
+    if (user.password) {
+      await updatePasswordHistory(user.id, user.password.hash);
+    }
+
     await prisma.user.update({
-      where: {
-        email: maybeRequest.email,
-      },
+      where: { email: maybeRequest.email },
       data: {
         password: {
           upsert: {
@@ -80,7 +148,7 @@ async function handler(req: NextRequest) {
         identityProviderId: null,
       },
     });
-  } catch (e) {
+  } catch (_e) {
     return NextResponse.json({}, { status: 404 });
   }
 
