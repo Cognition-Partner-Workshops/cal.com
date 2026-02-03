@@ -1,10 +1,10 @@
+import * as os from "node:os";
+import * as path from "node:path";
+import process from "node:process";
+import { WEBAPP_URL } from "@calcom/lib/constants";
 import type { Frame, PlaywrightTestConfig } from "@playwright/test";
 import { devices, expect } from "@playwright/test";
 import dotEnv from "dotenv";
-import * as os from "node:os";
-import * as path from "node:path";
-
-import { WEBAPP_URL } from "@calcom/lib/constants";
 
 dotEnv.config({ path: ".env" });
 
@@ -26,12 +26,16 @@ const IS_EMBED_TEST = process.argv.some((a) => a.startsWith("--project=@calcom/e
 const IS_EMBED_REACT_TEST = process.argv.some((a) => a.startsWith("--project=@calcom/embed-react"));
 
 // Suppress all webServer logs to reduce noise during E2E tests
+// Use 'dev' for local development (no build required) and 'start' for CI (requires pre-built app)
+const webServerCommand = process.env.CI
+  ? "yarn workspace @calcom/web copy-app-store-static && NEXT_PUBLIC_IS_E2E=1 NODE_OPTIONS='--dns-result-order=ipv4first' yarn workspace @calcom/web start -p 3000"
+  : "yarn workspace @calcom/web copy-app-store-static && NEXT_PUBLIC_IS_E2E=1 NODE_OPTIONS='--dns-result-order=ipv4first' yarn workspace @calcom/web dev -p 3000";
+
 const webServer: PlaywrightTestConfig["webServer"] = [
   {
-    command:
-      "yarn workspace @calcom/web copy-app-store-static && NEXT_PUBLIC_IS_E2E=1 NODE_OPTIONS='--dns-result-order=ipv4first' yarn workspace @calcom/web start -p 3000",
+    command: webServerCommand,
     port: 3000,
-    timeout: 60_000,
+    timeout: process.env.CI ? 60_000 : 120_000,
     reuseExistingServer: !process.env.CI,
     stdout: "ignore",
     stderr: "ignore",
@@ -71,7 +75,7 @@ const DEFAULT_CHROMIUM: NonNullable<PlaywrightTestConfig["projects"]>[number]["u
     cookies: [
       {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore TS definitions for USE are wrong.
+        // @ts-expect-error TS definitions for USE are wrong.
         url: WEBAPP_URL,
         name: "calcom-timezone-dialog",
         expires: -1,
@@ -119,7 +123,7 @@ const config: PlaywrightTestConfig = {
         timeout: DEFAULT_EXPECT_TIMEOUT,
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore TS definitions for USE are wrong.
+      // @ts-expect-error TS definitions for USE are wrong.
       use: DEFAULT_CHROMIUM,
     },
     {
@@ -130,7 +134,7 @@ const config: PlaywrightTestConfig = {
         timeout: DEFAULT_EXPECT_TIMEOUT,
       },
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore TS definitions for USE are wrong.
+      // @ts-expect-error TS definitions for USE are wrong.
       use: DEFAULT_CHROMIUM,
     },
     {
@@ -154,7 +158,7 @@ const config: PlaywrightTestConfig = {
       },
       testMatch: /.*\.e2e\.tsx?/,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore TS definitions for USE are wrong.
+      // @ts-expect-error TS definitions for USE are wrong.
       use: {
         ...DEFAULT_CHROMIUM,
         baseURL: "http://localhost:3101/",
@@ -290,13 +294,13 @@ expect.extend({
     } = await iframe.evaluate(() => {
       return {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        //@ts-expect-error
         visibility: window.initialBodyVisibility,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        //@ts-expect-error
         background: window.initialBodyBackground,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        //@ts-expect-error
         initialValuesSet: window.initialValuesSet,
       };
     });
