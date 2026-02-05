@@ -41,7 +41,24 @@
    <a href="https://console.algora.io/org/cal/bounties?status=open"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fconsole.algora.io%2Fapi%2Fshields%2Fcal%2Fbounties%3Fstatus%3Dopen" /></a>
 </p>
 
-<!-- ABOUT THE PROJECT -->
+---
+
+## Table of Contents
+
+- [About the Project](#about-the-project)
+- [Quick Start](#quick-start)
+- [Development](#development)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+  - [Quick Start with Docker](#quick-start-with-yarn-dx)
+  - [Manual Setup](#manual-setup)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Integrations](#integrations)
+- [License](#license)
+- [Contributing](#contributing)
+
+---
 
 ## About the Project
 
@@ -80,18 +97,20 @@ That's where Cal.com comes in. Self-hosted or hosted by us. White-label by desig
 
 <a href="https://producthunt.com/posts/calendso?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-calendso" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=291910&theme=light&period=monthly" alt="Cal.com - The open source Calendly alternative | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a> <a href="https://producthunt.com/posts/calendso?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-calendso" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=291910&theme=light" alt="Cal.com - The open source Calendly alternative | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a> <a href="https://producthunt.com/stories/how-this-open-source-calendly-alternative-rocketed-to-product-of-the-day" target="_blank"><img src="https://cal.com/maker-grant.svg" alt="Cal.com - The open source Calendly alternative | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
-This project is tested with browserstack
+This project is tested with BrowserStack.
 
 ### Built With
 
-- [Next.js](https://nextjs.org/?ref=cal.com)
-- [tRPC](https://trpc.io/?ref=cal.com)
-- [React.js](https://reactjs.org/?ref=cal.com)
-- [Tailwind CSS](https://tailwindcss.com/?ref=cal.com)
-- [Prisma.io](https://prisma.io/?ref=cal.com)
-- [Daily.co](https://go.cal.com/daily)
+| Technology | Purpose |
+|------------|---------|
+| [Next.js](https://nextjs.org/?ref=cal.com) | React framework |
+| [tRPC](https://trpc.io/?ref=cal.com) | Type-safe APIs |
+| [React.js](https://reactjs.org/?ref=cal.com) | UI library |
+| [Tailwind CSS](https://tailwindcss.com/?ref=cal.com) | Styling |
+| [Prisma.io](https://prisma.io/?ref=cal.com) | Database ORM |
+| [Daily.co](https://go.cal.com/daily) | Video conferencing |
 
-## Contact us
+## Contact Us
 
 Meet our sales team for any commercial inquiries.
 
@@ -103,7 +122,35 @@ Cal.com officially launched as v.1.0 on the 15th of September 2021 and we've com
 
 ![cal-star-github](https://user-images.githubusercontent.com/8019099/154853944-a9e3c999-3da3-4048-b149-b4f73893c6fb.gif)
 
-<!-- GETTING STARTED -->
+---
+
+## Quick Start
+
+Get Cal.com running locally in under 5 minutes:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/calcom/cal.com.git
+cd cal.com
+
+# 2. Install dependencies
+yarn
+
+# 3. Set up environment variables
+cp .env.example .env
+# Generate secrets and add to .env:
+# NEXTAUTH_SECRET=$(openssl rand -base64 32)
+# CALENDSO_ENCRYPTION_KEY=$(openssl rand -base64 32)
+
+# 4. Start with Docker (includes database setup)
+yarn dx
+```
+
+After running `yarn dx`, open [http://localhost:3000](http://localhost:3000) in your browser. Test user credentials will be logged in the console.
+
+> **Note:** Requires Docker and Docker Compose to be installed. For detailed setup instructions, see the [Development](#development) section below.
+
+---
 
 ## Getting Started
 
@@ -111,13 +158,17 @@ To get a local copy up and running, please follow these simple steps.
 
 ### Prerequisites
 
-Here is what you need to be able to run Cal.com.
+Here is what you need to be able to run Cal.com:
 
-- Node.js (Version: >=18.x)
-- PostgreSQL (Version: >=13.x)
-- Yarn _(recommended)_
+| Requirement | Version |
+|-------------|---------|
+| Node.js | >= 18.x |
+| PostgreSQL | >= 13.x |
+| Yarn | Latest (recommended) |
 
-> If you want to enable any of the available integrations, you may want to obtain additional credentials for each one. More details on this can be found below under the [integrations section](#integrations).
+> **Tip:** If you want to enable any of the available integrations, you may want to obtain additional credentials for each one. More details can be found in the [Integrations](#integrations) section.
+
+---
 
 ## Development
 
@@ -298,21 +349,25 @@ yarn db-seed
 
 The above command will populate the local db with dummy users.
 
-### E2E-Testing
+---
 
-Be sure to set the environment variable `NEXTAUTH_URL` to the correct value. If you are running locally, as the documentation within `.env.example` mentions, the value should be `http://localhost:3000`.
+### E2E Testing
 
-```sh
-# In a terminal just run:
+Ensure the `NEXTAUTH_URL` environment variable is set correctly (typically `http://localhost:3000` for local development).
+
+**Run E2E tests:**
+```bash
 yarn test-e2e
+```
 
-# To open the last HTML report run:
+**View test report:**
+```bash
 yarn playwright show-report test-results/reports/playwright-html-report
 ```
 
-#### Resolving issues
+#### Troubleshooting E2E Tests
 
-##### E2E test browsers not installed
+##### Browser Not Installed Error
 
 Run `npx playwright install` to download test browsers and resolve the error below when running `yarn test-e2e`:
 
@@ -370,7 +425,8 @@ Executable doesn't exist at /Users/alice/Library/Caches/ms-playwright/chromium-1
    ```
 
 1. Enjoy the new version.
-<!-- DEPLOYMENT -->
+
+---
 
 ## Deployment
 
@@ -665,7 +721,7 @@ Currently Vercel Pro Plan is required to be able to Deploy this application with
 
 [![Deploy on Elestio](https://elest.io/images/logos/deploy-to-elestio-btn.png)](https://elest.io/open-source/cal.com)
 
-<!-- ROADMAP -->
+---
 
 ## Roadmap
 
@@ -673,7 +729,7 @@ Currently Vercel Pro Plan is required to be able to Deploy this application with
 
 See the [roadmap project](https://cal.com/roadmap) for a list of proposed features (and known issues). You can change the view to see planned tagged releases.
 
-<!-- LICENSE -->
+---
 
 ## License
 
@@ -709,7 +765,7 @@ Cal.com, Inc. is a commercial open source company, which means some parts of thi
 
 <img width="100%" src="https://repobeats.axiom.co/api/embed/6bfca2f20f39738048b6e70ca205efde46352c3d.svg" />
 
-<!-- CONTRIBUTING -->
+---
 
 ## Contributing
 
