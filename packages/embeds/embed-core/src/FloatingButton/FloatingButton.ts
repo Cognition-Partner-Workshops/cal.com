@@ -45,7 +45,7 @@ export class FloatingButton extends HTMLElement {
   dataset!: DOMStringMap & FloatingButtonDataset & ModalTargetDatasetProps;
   buttonWrapperStyleDisplay!: HTMLElement["style"]["display"];
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
+  //@ts-expect-error
   static get observedAttributes() {
     return dataAttributes;
   }

@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { TRPCError } from "@trpc/server";
-import { getHTTPStatusCodeFromError } from "@trpc/server/http";
-
-import { type TraceContext } from "@calcom/lib/tracing";
+import type { TraceContext } from "@calcom/lib/tracing";
 import { TracedError } from "@calcom/lib/tracing/error";
 import { distributedTracing } from "@calcom/lib/tracing/factory";
 
@@ -11,6 +8,7 @@ import { HttpError } from "../http-error";
 import { safeStringify } from "../safeStringify";
 import { getServerErrorFromUnknown } from "./getServerErrorFromUnknown";
 import { performance } from "./perfObserver";
+import process from "node:process";
 
 export interface TracedRequest extends NextApiRequest {
   traceContext: TraceContext;
@@ -58,7 +56,11 @@ export function defaultResponder<T>(
       tracingLogger.error(`${operation} request failed`, safeStringify(err));
       const tracedError = TracedError.createFromError(err, traceContext);
       let error: HttpError;
+      // biome-ignore lint/style/noRestrictedImports: TRPCError needed for error handling in catch block
+      const { TRPCError } = await import("@trpc/server");
       if (err instanceof TRPCError) {
+        // biome-ignore lint/style/noRestrictedImports: needed for HTTP status code mapping
+        const { getHTTPStatusCodeFromError } = await import("@trpc/server/http");
         const statusCode = getHTTPStatusCodeFromError(err);
         error = new HttpError({ statusCode, message: err.message });
       } else {

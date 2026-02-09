@@ -180,7 +180,7 @@ export class SelectedCalendarRepository {
                     // Using ts-ignore instead of ts-expect-error because I am seeing conflicting errors in CI. In one case ts-expect-error fails with `Unused '@ts-expect-error' directive.`
                     // Removing ts-expect-error fails in another case that _ref isn't defined
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
+                    // @ts-expect-error
                     _ref: "maxAttempts",
                     _container: "SelectedCalendar",
                   },
@@ -223,7 +223,7 @@ export class SelectedCalendarRepository {
                   // Using ts-ignore instead of ts-expect-error because I am seeing conflicting errors in CI. In one case ts-expect-error fails with `Unused '@ts-expect-error' directive.`
                   // Removing ts-expect-error fails in another case that _ref isn't defined
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
+                  // @ts-expect-error
                   _ref: "maxAttempts",
                   _container: "SelectedCalendar",
                 },

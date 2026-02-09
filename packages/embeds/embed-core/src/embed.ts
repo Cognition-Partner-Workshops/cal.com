@@ -24,6 +24,7 @@ import type { EventData, EventDataMap } from "./sdk-action-manager";
 import tailwindCss from "./tailwindCss";
 import type { UiConfig, EmbedPageType, PrefillAndIframeAttrsConfig, ModalPrerenderOptions } from "./types";
 import { getMaxHeightForModal } from "./ui-utils";
+import process from "node:process";
 
 // Exporting for consumption by @calcom/embed-core user
 export type { EmbedEvent } from "./sdk-action-manager";
@@ -267,7 +268,7 @@ export class Cal {
     }
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore There can be any method which can have any number of arguments.
+      //@ts-expect-error There can be any method which can have any number of arguments.
       this.api[method](...args);
     } catch (e) {
       // Instead of throwing error, log and move forward in the queue
@@ -284,7 +285,7 @@ export class Cal {
     queue.splice(0);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    /** @ts-ignore */ // We changed the definition of push here.
+    /** @ts-expect-error */ // We changed the definition of push here.
     queue.push = (instruction) => {
       this.processInstruction(instruction);
     };
@@ -364,7 +365,7 @@ export class Cal {
 
     // Merge searchParams from config onto the URL which might have query params already
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
+    //@ts-expect-error
     for (const [key, value] of searchParams) {
       urlInstance.searchParams.append(key, value);
     }
@@ -863,7 +864,7 @@ class CalApi {
 
     CalApi.initializedNamespaces.push(this.cal.namespace);
 
-    const { calOrigin: calOrigin, origin: origin, ...restConfig } = config;
+    const { calOrigin, origin, ...restConfig } = config;
 
     this.cal.__config.calOrigin = calOrigin || origin || this.cal.__config.calOrigin;
 
@@ -1566,7 +1567,7 @@ window.addEventListener("message", (e) => {
     throw new Error(`Unhandled Action ${parsedAction}`);
   }
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
+  // @ts-expect-error
   actionManager.fire(parsedAction.type, detail.data);
 });
 

@@ -1,6 +1,7 @@
 import { startSpan, captureException } from "@sentry/nextjs";
 
 import { redactSensitiveData } from "./redactSensitiveData";
+import process from "node:process";
 
 /*
 WHEN TO USE

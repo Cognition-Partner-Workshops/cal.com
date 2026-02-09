@@ -34,18 +34,18 @@ beforeEach(() => {
 export const constantsScenarios = {
   enableTeamBilling: () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error
     mockedConstants.IS_TEAM_BILLING_ENABLED = true;
   },
   setWebsiteUrl: (url: string) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error
     mockedConstants.WEBSITE_URL = url;
   },
   set: (envVariables: Record<string, string>) => {
     Object.entries(envVariables).forEach(([key, value]) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error
       mockedConstants[key] = value;
     });
   },

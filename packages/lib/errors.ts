@@ -47,7 +47,7 @@ export function getErrorFromUnknown(cause: unknown): Error & { statusCode?: numb
   }
   if (typeof cause === "string") {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore https://github.com/tc39/proposal-error-cause
+    // @ts-expect-error https://github.com/tc39/proposal-error-cause
     return new Error(cause, { cause });
   }
 

@@ -24,7 +24,8 @@ import {
   createMockJWTInstance,
   createCredentialForCalendarService,
 } from "./utils";
-import { CredentialForCalendarServiceWithEmail } from "@calcom/types/Credential";
+import type { CredentialForCalendarServiceWithEmail } from "@calcom/types/Credential";
+import process from "node:process";
 
 const log = logger.getSubLogger({ prefix: ["CalendarService.test"] });
 

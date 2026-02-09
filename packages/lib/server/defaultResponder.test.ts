@@ -3,8 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import { ErrorCode } from "@calcom/lib/errorCodes";
 
-import { TRPCError } from "@trpc/server";
-
 import { defaultResponder } from "./defaultResponder";
 
 describe("defaultResponder", () => {
@@ -43,6 +41,8 @@ describe("defaultResponder", () => {
     expect(res.status).toHaveBeenCalledWith(409);
   });
   it("Rate limit should respond with a 429 status code", async () => {
+    // biome-ignore lint/style/noRestrictedImports: TRPCError needed for test assertion
+    const { TRPCError } = await import("@trpc/server");
     const f = vi.fn().mockRejectedValue(new TRPCError({ code: "TOO_MANY_REQUESTS" }));
     const req = {} as NextApiRequest;
     const res = {

@@ -242,7 +242,7 @@ for (const [appName, meta] of Object.entries(appStoreMetadata)) {
     for (const [key, value] of Object.entries(location)) {
       if (typeof value === "string") {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // @ts-expect-error
         location[key] = value.replace(/{SLUG}/g, meta.slug).replace(/{TITLE}/g, meta.name);
       }
     }
@@ -397,7 +397,7 @@ export const getLocationValueForDB = (
   eventLocations: LocationObject[]
 ) => {
   let bookingLocation = bookingLocationTypeOrValue;
-  let conferenceCredentialId: number | undefined = undefined;
+  let conferenceCredentialId: number | undefined ;
 
   eventLocations.forEach((location) => {
     if (location.type === bookingLocationTypeOrValue) {
