@@ -1,4 +1,5 @@
 // We can't import @calcom/lib/constants here yet as this file is compiled using Vite
+import process from "node:process";
 const WEBAPP_URL = process.env.EMBED_PUBLIC_WEBAPP_URL || "";
 if (!WEBAPP_URL) {
   throw new Error("WEBAPP_URL is not set");
@@ -69,10 +70,10 @@ if (!calLink) {
 
 // TODO: Reuse the embed code snippet from the embed-snippet package - Not able to use it because of circular dependency
 // Install Cal Embed Code Snippet
-(function (C, A, L) {
+((C, A, L) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const p = function (a, ar) {
+  //@ts-expect-error
+  const p = (a, ar) => {
     a.q.push(ar);
   };
   const d = C.document;
@@ -96,7 +97,7 @@ if (!calLink) {
         };
         const namespace = ar[1];
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        //@ts-expect-error
         api.q = api.q || [];
         if (typeof namespace === "string") {
           // Make sure that even after re-execution of the snippet, the namespace is not overridden
@@ -181,5 +182,3 @@ function makePreviewPageUseSystemPreference() {
 
 // This makes preview page behave like a website that has system preference enabled. This provides a better experience of preview when user switch their system theme to dark
 makePreviewPageUseSystemPreference();
-
-export {};

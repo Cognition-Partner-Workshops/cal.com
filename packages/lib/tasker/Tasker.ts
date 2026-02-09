@@ -3,6 +3,7 @@ import { configure } from "@trigger.dev/sdk";
 
 import { ENABLE_ASYNC_TASKER } from "../constants";
 import type { ILogger } from "./types";
+import process from "node:process";
 
 const isAsyncTaskerEnabled =
   ENABLE_ASYNC_TASKER && process.env.TRIGGER_SECRET_KEY && process.env.TRIGGER_API_URL;

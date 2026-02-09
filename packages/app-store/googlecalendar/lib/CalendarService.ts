@@ -25,6 +25,7 @@ import type { CredentialForCalendarServiceWithEmail } from "@calcom/types/Creden
 
 import { AxiosLikeResponseToFetchResponse } from "../../_utils/oauth/AxiosLikeResponseToFetchResponse";
 import { CalendarAuth } from "./CalendarAuth";
+import process from "node:process";
 
 type FreeBusyArgs = { timeMin: string; timeMax: string; items: { id: string }[] };
 
@@ -41,7 +42,7 @@ const GOOGLE_WEBHOOK_URL_BASE = process.env.GOOGLE_WEBHOOK_URL || process.env.NE
 const GOOGLE_WEBHOOK_URL = `${GOOGLE_WEBHOOK_URL_BASE}/api/integrations/googlecalendar/webhook`;
 
 const isGaxiosResponse = (error: unknown): error is GaxiosResponse<calendar_v3.Schema$Event> =>
-  typeof error === "object" && !!error && Object.prototype.hasOwnProperty.call(error, "config");
+  typeof error === "object" && !!error && Object.hasOwn(error, "config");
 
 export default class GoogleCalendarService implements Calendar {
   private integrationName = "";

@@ -20,6 +20,7 @@ import { TRPCError } from "@trpc/server";
 
 import type { TrpcSessionUser } from "../../../types";
 import type { TAddGuestsInputSchema } from "./addGuests.schema";
+import process from "node:process";
 
 type TUser = Pick<NonNullable<TrpcSessionUser>, "id" | "email" | "organizationId"> &
   Partial<Pick<NonNullable<TrpcSessionUser>, "profile">>;

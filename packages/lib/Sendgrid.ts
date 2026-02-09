@@ -3,6 +3,7 @@ import type { ClientRequest } from "@sendgrid/client/src/request";
 import type { ClientResponse } from "@sendgrid/client/src/response";
 
 import logger from "@calcom/lib/logger";
+import process from "node:process";
 
 export type SendgridFieldOptions = [string, string][];
 
@@ -112,7 +113,7 @@ export default class Sendgrid {
           this.log.debug("sync:sendgrid:getCustomFieldsIds:customField:created", created);
           return created.id;
         } else {
-          const index = customFieldsNames.findIndex((val) => val === customFields[idx][0]);
+          const index = customFieldsNames.indexOf(customFields[idx][0]);
           if (index >= 0) {
             this.log.debug(
               "sync:sendgrid:getCustomFieldsIds:customField:existed",

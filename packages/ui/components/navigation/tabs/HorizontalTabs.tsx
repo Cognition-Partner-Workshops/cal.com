@@ -8,8 +8,7 @@ export interface NavTabProps {
   actions?: JSX.Element;
 }
 
-const HorizontalTabs = function ({ tabs, linkShallow, linkScroll, actions, ...props }: NavTabProps) {
-  return (
+const HorizontalTabs = ({ tabs, linkShallow, linkScroll, actions, ...props }: NavTabProps) => (
     <div className="mb-4 max-w-full lg:mb-5">
       <nav
         className="no-scrollbar flex space-x-0.5 overflow-x-scroll rounded-md"
@@ -22,6 +21,5 @@ const HorizontalTabs = function ({ tabs, linkShallow, linkScroll, actions, ...pr
       {actions && actions}
     </div>
   );
-};
 
 export default HorizontalTabs;

@@ -185,7 +185,7 @@ expect.extend({
       return {
         pass: false,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
+        //@ts-expect-error
         actual: icsObject[icsKey].uid!,
         expected: expectedEmail.ics?.iCalUID,
         message: () => `Expected ICS UID ${isNot ? "is" : "isn't"} present in actual`,

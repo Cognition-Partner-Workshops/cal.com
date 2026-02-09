@@ -11,6 +11,7 @@ import prisma from "@calcom/prisma";
 import checkSession from "../../_utils/auth";
 import { ExchangeAuthentication, ExchangeVersion } from "../enums";
 import { CalendarService } from "../lib";
+import process from "node:process";
 
 const formSchema = z
   .object({

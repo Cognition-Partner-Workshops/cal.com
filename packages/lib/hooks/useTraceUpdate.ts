@@ -5,10 +5,10 @@ export function useTraceUpdate(props: { [s: string]: unknown } | ArrayLike<unkno
   useEffect(() => {
     const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore TODO: fix this
+      // @ts-expect-error TODO: fix this
       if (prev.current[k] !== v) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore TODO: fix this
+        // @ts-expect-error TODO: fix this
         ps[k] = [prev.current[k], v];
       }
       return ps;

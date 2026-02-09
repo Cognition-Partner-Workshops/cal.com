@@ -39,6 +39,7 @@ import type {
 import type { CredentialPayload } from "@calcom/types/Credential";
 
 import { ExchangeAuthentication } from "../enums";
+import process from "node:process";
 
 export default class ExchangeCalendarService implements Calendar {
   private integrationName = "";

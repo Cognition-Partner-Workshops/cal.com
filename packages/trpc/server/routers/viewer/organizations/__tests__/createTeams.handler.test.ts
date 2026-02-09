@@ -43,7 +43,7 @@ async function createTestTeam(data: {
       parentId: data.parentId,
       isOrganization: data.isOrganization ?? false,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error
       metadata: data.metadata || {},
       isPlatform: data.isPlatform ?? false,
     },

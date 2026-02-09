@@ -136,7 +136,7 @@ export async function getCustomFieldsIds(
           }
         }
       } else {
-        const index = customFieldsNames.findIndex((val) => val === customFields[idx][0]);
+        const index = customFieldsNames.indexOf(customFields[idx][0]);
         if (index >= 0) {
           return relevantFields[index].id;
         } else {
