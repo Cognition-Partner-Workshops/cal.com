@@ -50,6 +50,47 @@ Each test case follows this standardized format:
 
 ---
 
+## Test Case Summary
+
+### Total Test Cases: 105
+
+### Summary by Module
+
+| # | Module | Positive | Negative | Edge | Boundary | Network | Total |
+|---|--------|----------|----------|------|----------|---------|-------|
+| 1 | Authentication | 5 | 6 | 2 | 2 | 1 | 16 |
+| 2 | Event Types | 12 | 2 | 0 | 2 | 0 | 16 |
+| 3 | Booking Flow | 13 | 4 | 4 | 0 | 0 | 21 |
+| 4 | Availability Management | 7 | 1 | 1 | 0 | 0 | 9 |
+| 5 | Calendar Integrations | 3 | 1 | 0 | 0 | 1 | 5 |
+| 6 | Video Conferencing | 4 | 0 | 0 | 0 | 0 | 4 |
+| 7 | Workflows & Automations | 5 | 1 | 0 | 0 | 0 | 6 |
+| 8 | Organizations & Teams | 7 | 2 | 0 | 0 | 0 | 9 |
+| 9 | Payments | 8 | 0 | 0 | 0 | 0 | 8 |
+| 10 | Embed & API | 6 | 0 | 0 | 0 | 0 | 6 |
+| 11 | Routing Forms | 4 | 1 | 0 | 0 | 0 | 5 |
+| | **Total** | **74** | **18** | **7** | **4** | **2** | **105** |
+
+### Summary by Test Type
+
+| Test Type | Count | Percentage | Description |
+|-----------|-------|------------|-------------|
+| Positive (P) | 74 | 70.5% | Happy path scenarios validating expected behavior |
+| Negative (N) | 18 | 17.1% | Invalid inputs, unauthorized access, error handling |
+| Edge (E) | 7 | 6.7% | Boundary conditions, unusual but valid scenarios |
+| Boundary (B) | 4 | 3.8% | Min/max values, character limits, date ranges |
+| Network (NW) | 2 | 1.9% | Offline behavior, timeout handling, retry mechanisms |
+
+### Summary by Priority
+
+| Priority | Count | Percentage |
+|----------|-------|------------|
+| High | 62 | 59.0% |
+| Medium | 33 | 31.4% |
+| Low | 10 | 9.5% |
+
+---
+
 ## 1. Authentication Module Test Cases
 
 ### 1.1 User Registration
