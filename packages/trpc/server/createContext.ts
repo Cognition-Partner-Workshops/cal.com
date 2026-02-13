@@ -1,3 +1,23 @@
+// createContext.ts — Builds the tRPC context available to every procedure.
+//
+// Two layers of context:
+//
+//   1. Inner context (createContextInner): Always available, even in tests and
+//      SSG where there is no HTTP request. Provides prisma, insightsDb (read
+//      replica), session, locale, sourceIp, and traceContext.
+//
+//   2. Outer context (createContext): Wraps inner context with req/res from
+//      Next.js. Resolves the locale from the request and optionally fetches
+//      the session via a pluggable sessionGetter (NextAuth's getServerSession).
+//
+// Usage:
+//   - API handler: createContext(opts) is called by createNextApiHandler
+//   - Testing: createContextInner({ locale: "en", session }) bypasses HTTP
+//   - SSG helpers: createContextInner() for build-time data fetching
+//
+// Exported types (TRPCContext, WithSession, WithLocale) are used by middleware
+// to narrow the context type after authentication checks.
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
 import type { Session } from "next-auth";

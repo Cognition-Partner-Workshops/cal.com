@@ -1,3 +1,24 @@
+// index.ts — PrismaClient initialization for Cal.com.
+//
+// This file configures and exports two Prisma client instances:
+//
+//   1. `prisma` (read-write): The primary database client used throughout the
+//      monorepo. Extended with four safety/business extensions:
+//        - excludeLockedUsers: Filters locked user accounts from queries
+//        - excludePendingPayments: Filters teams with pending payments
+//        - bookingIdempotencyKey: Prevents duplicate booking creation
+//        - disallowUndefinedDeleteUpdateMany: Guards against accidental mass
+//          deletions/updates when a filter resolves to undefined
+//
+//   2. `readonlyPrisma` (read-only): Connects to INSIGHTS_DATABASE_URL for
+//      analytics queries, falling back to the primary client if not configured.
+//
+// Connection pooling is controlled by USE_POOL env var. When enabled, uses
+// pg.Pool with 5 max connections and 5-minute idle timeout.
+//
+// In development, the base client is cached on `global` to survive Next.js
+// hot-reloads without exhausting database connections.
+
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 

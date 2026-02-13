@@ -1,11 +1,71 @@
-# Embeds
+# @calcom/embeds
 
-This folder contains all the various flavours of embeds.
+Embeddable scheduling widgets that allow website owners to integrate Cal.com booking flows directly into their pages. The system is split into three packages that work together in a layered architecture.
 
-`core` contains the core library written in vanilla JS that manages the embed.
-`snippet` contains the Vanilla JS Code Snippet that can be installed on any website and would automatically fetch the `core` library.
+## Architecture Overview
 
-Please see the respective folder READMEs for details on them.
+### Package Layering
+
+```
+Website Owner's Page
+        │
+        ▼
+┌─────────────────────┐
+│  embed-snippet      │  Minimal loader (~5KB) added to HTML <script> tag.
+│  (or embed-react)   │  Creates global `Cal` object, fetches embed-core from CDN.
+└────────┬────────────┘
+         │ loads
+         ▼
+┌─────────────────────┐
+│  embed-core         │  Full vanilla JS implementation. Creates iframes,
+│                     │  manages parent↔iframe communication, handles theming,
+│                     │  prefill, prerendering, and SDK events.
+└────────┬────────────┘
+         │ renders in iframe
+         ▼
+┌─────────────────────┐
+│  apps/web (Booker)  │  The actual booking UI served inside the iframe.
+│                     │  Communicates back via postMessage protocol.
+└─────────────────────┘
+```
+
+### Packages
+
+| Package | Purpose | Output |
+|---|---|---|
+| `embed-snippet/` | Lightweight loader script for HTML websites | UMD bundle (~5KB) |
+| `embed-core/` | Core embed engine (vanilla JS + Tailwind CSS) | Built to `apps/web/public/embed/` |
+| `embed-react/` | React component wrapper around embed-snippet | ESM package for React apps |
+
+### Embed Types
+
+- **Inline** (`Cal.inline()`) - Renders booking widget in a designated container element
+- **Modal/Popup** (`Cal.modal()`) - Opens booking in a centered modal dialog
+- **Floating Button** (`Cal.floatingButton()`) - Fixed-position button that opens a modal on click
+- **Element Click** (`data-cal-link` attribute) - Attaches modal trigger to any existing element
+
+### Connection to Monorepo
+
+| Package | Relationship |
+|---|---|
+| `apps/web` | Serves the booking pages inside embed iframes; hosts built embed-core assets |
+| `@calcom/features/embed` | Embed-specific UI components and configuration within the web app |
+| `@calcom/ui` | UI primitives used by embed configuration screens |
+| `turbo.json` | Build orchestration: embed-core outputs to `apps/web/public/embed/` |
+
+### SDK Events
+
+The embed fires events that host pages can listen to:
+- `eventTypeSelected` - User selects an event type
+- `dateSelected` - User picks a date
+- `timeSelected` - User selects a time slot
+- `bookingSuccessful` - Booking is confirmed
+- `linkReady` - Embed iframe is loaded and ready
+- `linkFailed` - Embed failed to load
+
+---
+
+Please see the respective folder READMEs for details on each package.
 
 ## Publishing to NPM. It will soon be automated using changesets github action
 

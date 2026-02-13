@@ -7,19 +7,59 @@
   <a href="https://cal.com/docs/enterprise-features/api#api-server-specifications">Read the API docs</a>
 </div>
 
-# Commercial Cal.com Public API
+# @calcom/api (v1) - Legacy REST API
 
-Welcome to the Public API ("/apps/api") of the Cal.com.
+> **Status: Maintenance mode.** New features and integrations should use [API v2](../v2/README.md) (`apps/api/v2/`), which is built on NestJS with versioned endpoints and OpenAPI documentation.
 
-This is the public REST api for cal.com.
-It exposes CRUD Endpoints of all our most important resources.
-And it makes it easy for anyone to integrate with Cal.com at the application programming level.
+Legacy REST API for Cal.com built as a standalone Next.js application. It exposes CRUD endpoints for core scheduling resources (event types, bookings, schedules, users, teams) and authenticates via API key query parameters.
+
+## Architecture Overview
+
+This API runs as a separate Next.js app within the monorepo (port 3002). Unlike the main web app which uses tRPC, this API uses standard Next.js API routes (`pages/api/`) with Zod validation and custom middleware for authentication and request processing.
+
+### Directory Structure
+
+```
+apps/api/v1/
+├── pages/api/           # Next.js API route handlers
+│   ├── event-types/     # Event type CRUD (/v1/event-types)
+│   ├── bookings/        # Booking CRUD (/v1/bookings)
+│   ├── schedules/       # Schedule CRUD (/v1/schedules)
+│   ├── users/           # User management (/v1/users)
+│   ├── teams/           # Team management (/v1/teams)
+│   ├── attendees/       # Attendee management
+│   ├── availabilities/  # Availability queries
+│   ├── webhooks/        # Webhook CRUD
+│   ├── slots/           # Available slot queries
+│   └── docs.ts          # OpenAPI/Swagger spec endpoint
+├── lib/
+│   ├── validations/     # Zod validation schemas per resource
+│   └── helpers/         # Shared utilities (verifyApiKey, withMiddleware)
+├── next.config.js       # Redirects /v1/* to /api/v1/*, transpiles monorepo packages
+└── package.json         # @calcom/api
+```
+
+### Connection to Monorepo
+
+| Package | Role |
+|---|---|
+| `@calcom/prisma` | Direct database access for all CRUD operations |
+| `@calcom/lib` | Shared utilities (date handling, constants) |
+| `@calcom/features` | Business logic for bookings and event types |
+| `@calcom/app-store` | Integration metadata and credential handling |
+
+### Key Patterns
+
+- **Middleware chain**: `withMiddleware()` wraps each endpoint with API key verification, HTTP method validation, and error handling via `next-api-middleware`
+- **Validation schemas**: Each resource has Zod schemas in `lib/validations/` with `BaseBodyParams` (input), `Public` (output), and `BodyParams` (merged) variants
+- **OpenAPI annotations**: Each endpoint has `@swagger` YAML comments that auto-generate the spec served at `/docs`
 
 ## Stack
 
-- NextJS
+- Next.js (API routes only)
 - TypeScript
-- Prisma
+- Prisma (via `@calcom/prisma`)
+- Zod (request/response validation)
 
 ## Development
 

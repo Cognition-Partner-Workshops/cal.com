@@ -1,30 +1,66 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://github.com/user-attachments/assets/ce7c2ecf-6097-469a-8512-c846a9fb665d" height="200" alt="Nest Logo" /></a>
-</p>
+# @calcom/api-v2
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Modern REST API for the Cal.com Platform, built with [NestJS](https://github.com/nestjs/nest). This is the primary API for external developers and platform partners building scheduling integrations on top of Cal.com.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Architecture Overview
 
-## Description
+### Runtime Stack
 
-Cal.com is using the [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS** framework with Express adapter
+- **Prisma** ORM via `@calcom/prisma` for database access
+- **Redis** for rate limiting (`@nestjs/throttler`) and Bull job queues
+- **Swagger/OpenAPI** for auto-generated API documentation
+- **Sentry** for error monitoring, **Winston** for structured logging
+
+### Directory Structure
+
+```
+src/
+├── main.ts                  # Entrypoint: creates NestJS app, starts listening
+├── app.ts                   # Bootstrap: configures CORS, versioning, filters, pipes
+├── app.module.ts            # Root module: wires imports, guards, interceptors
+├── modules/                 # Core NestJS feature modules
+│   ├── auth/                # Authentication guards and strategies
+│   ├── prisma/              # Database access (wraps @calcom/prisma)
+│   ├── redis/               # Shared Redis connection
+│   ├── endpoints.module.ts  # Aggregates all endpoint modules
+│   ├── organizations/       # Org management (teams, users, bookings)
+│   ├── oauth-clients/       # OAuth client CRUD for platform partners
+│   └── ...                  # billing, slots, webhooks, event-types, etc.
+├── ee/                      # Enterprise edition endpoints
+│   ├── bookings/            # Versioned booking endpoints (e.g., 2024-08-13/)
+│   ├── event-types/         # Versioned event type endpoints (e.g., 2024_06_14/)
+│   ├── schedules/           # Schedule management
+│   └── platform-endpoints-module.ts  # Aggregates all EE modules
+├── filters/                 # Exception filters (Prisma, Zod, HTTP, tRPC)
+├── middleware/               # Request middleware (logging, body parsing, redirects)
+└── swagger/                 # OpenAPI spec generation
+```
+
+### Key Entrypoints
+
+**`src/main.ts`** - Creates the NestJS app from `AppModule` with Winston logging, calls `bootstrap()` to configure middleware, generates Swagger docs, and starts listening (default port 3003).
+
+**`src/app.ts`** (bootstrap function) - Applies production middleware:
+- Custom header-based API versioning (`cal-api-version` header, fallback `VERSION_2024_04_15`)
+- Helmet security headers, CORS (all origins, specific allowed headers)
+- Global `ValidationPipe` with whitelist mode
+- Layered exception filters: Prisma > Zod > HTTP > tRPC > CalendarService
+
+**`src/app.module.ts`** - Root module composing: ConfigModule (global), Redis + Bull (job queues), ThrottlerModule (rate limiting), Prisma, Auth, JWT, and all endpoint modules. Middleware pipeline: RawBody (webhooks) > JSON > RequestID > Logger > Redirects > Rewrites.
+
+### API Versioning
+
+Date-based versioning via `cal-api-version` header. Each version has its own Input/Output DTOs and transformation services to ensure API stability independent of internal schema changes.
+
+### Connection to Monorepo
+
+| Package | Role |
+|---|---|
+| `@calcom/prisma` | Database access via `PrismaModule` |
+| `@calcom/platform-constants` | API version constants, header names |
+| `@calcom/platform-types` | Versioned Input/Output DTOs |
+| `@calcom/platform-libraries` | Shared business logic from `@calcom/features` |
 
 ## Installation
 
@@ -56,7 +92,7 @@ CALCOM_LICENSE_KEY=00000000-0000-0000-0000-000000000000
 
 ## Running the app
 
-# Development
+### Development
 
 ```bash
 $ yarn run start
@@ -80,15 +116,15 @@ If you are making changes in packages/platform/libraries, you should run the fol
 $ yarn local
 ```
 
-# watch mode
+### Watch mode
+```bash
 $ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
 ```
 
-
-
+### Production mode
+```bash
+$ yarn run start:prod
+```
 
 ## Test
 
@@ -100,7 +136,7 @@ $ yarn run test
 $ yarn run test:e2e
 
 # e2e tests in watch mode
-$ yarn test:e2e:watch 
+$ yarn test:e2e:watch
 
 # run specific e2e test file in watch mode
 $ yarn test:e2e:watch --testPathPattern=filePath
@@ -117,15 +153,8 @@ $ yarn run test:cov
 3. If you use ApiAuthGuard but want that only specific auth method is allowed, for example, api key, then you also need to add `@ApiAuthGuardOnlyAllow(["API_KEY"])` under the `@UseGuards(ApiAuthGuard)`. Shortly, use `ApiAuthGuardOnlyAllow` to specify which auth methods are allowed by `ApiAuthGuard`. If `ApiAuthGuardOnlyAllow` is not used or nothing is passed to it or empty array it means that
 all auth methods are allowed.
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Authentication
+Multiple auth strategies: API Key (`Authorization: Bearer cal_...`), OAuth (platform partners), Session (cookie-based NextAuth), and Access Tokens. Use `@UseGuards(ApiAuthGuard)` and restrict with `@ApiAuthGuardOnlyAllow(["API_KEY"])`.
 
 ## License
 

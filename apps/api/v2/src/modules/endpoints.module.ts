@@ -1,3 +1,15 @@
+// endpoints.module.ts — Aggregates all API endpoint modules into one import.
+//
+// AppModule imports this single module instead of each endpoint module individually.
+// This keeps AppModule focused on global concerns (auth, config, rate limiting)
+// while EndpointsModule manages the full set of REST controllers.
+//
+// Module groups:
+//   - Core: OAuthClient, Billing, Users, Webhooks, Timezones, Stripe, Conferencing
+//   - Organization: Teams bookings, Users bookings, Routing forms, Schedules
+//   - Platform EE: Versioned booking/event-type/schedule endpoints via PlatformEndpointsModule
+//   - Atoms: Embeddable UI component endpoints
+
 import { PlatformEndpointsModule } from "@/ee/platform-endpoints-module";
 import { AtomsModule } from "@/modules/atoms/atoms.module";
 import { BillingModule } from "@/modules/billing/billing.module";
