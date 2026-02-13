@@ -1,3 +1,22 @@
+// _router.tsx — Viewer router composition for the Cal.com tRPC API.
+//
+// This file composes 40+ sub-routers into the main `viewerRouter`, which is
+// mounted at `appRouter.viewer` in _app.ts. It covers every domain in the
+// application, organized into these groups:
+//
+//   Core:          bookings, eventTypes, slots, availability, calendars, me
+//   Teams & Orgs:  teams, organizations, dsync, sso
+//   Integrations:  apps, credentials, calVideo, googleWorkspace, oAuth
+//   Admin:         admin, users, deploymentSetup
+//   Features:      workflows, webhooks, insights, payments, routingForms
+//   Misc:          i18n, timezones, features (flags), credits, holidays, ooo
+//
+// Sub-routers are imported from sibling directories (e.g., ./bookings/_router)
+// and each contains query/mutation procedures with their own handlers.
+//
+// The `loggedInViewerRouter` and `publicViewerRouter` are separated to enforce
+// authentication at the router level rather than per-procedure.
+
 import { featureFlagRouter } from "@calcom/features/flags/server/router";
 
 import { router } from "../../trpc";

@@ -1,3 +1,25 @@
+// app.ts — Bootstrap function that configures the NestJS application.
+//
+// Called by main.ts after the NestJS app is created. Applies production-grade
+// middleware and global configuration:
+//
+//   1. API Versioning: Custom header-based versioning using the "cal-api-version"
+//      header. Clients specify a date-based version (e.g., "2024-08-13") and the
+//      server routes to the matching controller version. Falls back to VERSION_2024_04_15.
+//
+//   2. Security: Helmet for HTTP security headers. CORS allows all origins with
+//      specific allowed headers (cal-client-id, cal-secret-key, Authorization, etc.).
+//
+//   3. Validation: Global ValidationPipe with whitelist mode strips unknown
+//      properties from request bodies, preventing mass-assignment vulnerabilities.
+//
+//   4. Exception Filters: Applied in order (last registered runs first in NestJS):
+//      Prisma > Zod > HTTP > tRPC > CalendarService. Each filter handles a specific
+//      error type and normalizes the response format.
+//
+//   5. Cookie parsing for session-based auth flows.
+//   6. Optional global prefix via API_GLOBAL_PREFIX env var.
+
 import "./instrument";
 
 import { HttpExceptionFilter } from "@/filters/http-exception.filter";

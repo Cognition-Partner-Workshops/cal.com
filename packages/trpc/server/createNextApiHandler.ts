@@ -1,3 +1,23 @@
+// createNextApiHandler.ts — Next.js API route adapter for tRPC with caching.
+//
+// Wraps tRPC's built-in Next.js adapter with Cal.com-specific configuration:
+//
+//   - Query batching: Enabled so the React client can batch multiple queries
+//     into a single HTTP request (reduces waterfall on page load).
+//
+//   - Response caching (responseMeta): Sets Cache-Control and cdn-cache-control
+//     headers based on the procedure path. Rules:
+//       * session         → no-cache (always fresh)
+//       * i18n.get        → max-age=1yr (versioned by CalComVersion, bust on deploy)
+//       * cityTimezones   → max-age=1yr (same versioning strategy)
+//       * slots.getSchedule → no-cache (availability changes in real time)
+//       * features.map    → max-age=5min (feature flags, balance freshness vs load)
+//
+//   - cdn-cache-control header is set alongside cache-control so Vercel's edge
+//     CDN respects stale-while-revalidate directives.
+//
+// Used by apps/web/pages/api/trpc/[trpc].ts to serve the public tRPC endpoint.
+
 import type { AnyRouter } from "@trpc/server";
 import { createNextApiHandler as _createNextApiHandler } from "@trpc/server/adapters/next";
 

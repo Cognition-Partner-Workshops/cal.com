@@ -1,3 +1,21 @@
+// app.module.ts — Root NestJS module for the Cal.com Platform API.
+//
+// This module wires together all application-level concerns:
+//   - ConfigModule: Global configuration loaded from appConfig (env-based, no .env files)
+//   - RedisModule + BullModule: Shared Redis connection for rate limiting and async job queues
+//   - ThrottlerModule: Rate limiting backed by Redis (CustomThrottlerGuard enforces per-route limits)
+//   - PrismaModule: Database access wrapping @calcom/prisma
+//   - EndpointsModule: Aggregates all REST API endpoint controllers
+//   - AuthModule + JwtModule: Authentication strategies (API key, OAuth, session) and JWT management
+//
+// Global providers applied to every request:
+//   - SentryGlobalFilter: Captures unhandled exceptions for error monitoring
+//   - ResponseInterceptor: Attaches unique request IDs to responses
+//   - CustomThrottlerGuard: Enforces rate limits using Redis-backed storage
+//
+// Middleware pipeline (applied in configure()):
+//   RawBody (webhook routes only) > JSON body > Request ID > Logger > Redirects > Rewrites
+
 import appConfig from "@/config/app";
 import { CustomThrottlerGuard } from "@/lib/throttler-guard";
 import { AppLoggerMiddleware } from "@/middleware/app.logger.middleware";
