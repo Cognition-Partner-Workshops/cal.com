@@ -1,19 +1,16 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-
-import AdminAppsList from "~/apps/components/AdminAppsList";
 import { APP_NAME } from "@calcom/lib/constants";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import type { inferSSRProps } from "@calcom/types/inferSSRProps";
 import { WizardForm } from "@calcom/ui/components/form";
 import type { WizardStep } from "@calcom/ui/components/form/wizard/WizardForm";
-
 import { AdminUserContainer as AdminUser } from "@components/setup/AdminUser";
 import LicenseSelection from "@components/setup/LicenseSelection";
-
 import type { getServerSideProps } from "@server/lib/setup/getServerSideProps";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import AdminAppsList from "~/apps/components/AdminAppsList";
 
 const SETUP_VIEW_SETPS = {
   ADMIN_USER: 1,
@@ -128,7 +125,7 @@ export function Setup(props: PageProps) {
   });
 
   return (
-    <main className="bg-subtle flex items-center print:h-full md:h-screen">
+    <main className="flex items-center bg-gradient-to-br from-blue-50 to-blue-100 print:h-full dark:from-blue-950 dark:to-gray-900 md:h-screen">
       <WizardForm
         defaultStep={defaultStep}
         steps={steps}
