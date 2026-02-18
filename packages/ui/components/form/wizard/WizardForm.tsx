@@ -1,9 +1,8 @@
 "use client";
 
+import classNames from "@calcom/ui/classNames";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
-
-import classNames from "@calcom/ui/classNames";
 
 import { Button } from "../../button";
 import { Steps } from "../../form/step";
@@ -61,7 +60,7 @@ export function WizardForm({
     <div className="mx-auto mt-4 print:w-full" data-testid="wizard-form">
       <div className={classNames("overflow-hidden md:mb-2 md:w-[700px]", containerClassname)}>
         <div className="px-6 py-5">
-          <h1 className="font-cal text-emphasis text-2xl" data-testid="step-title">
+          <h1 className="font-cal text-2xl text-blue-900 dark:text-blue-100" data-testid="step-title">
             {currentStepData.title}
           </h1>
           <p className="text-subtle text-sm" data-testid="step-description">
@@ -81,7 +80,7 @@ export function WizardForm({
       <div className={classNames("mb-8 overflow-hidden md:w-[700px]", containerClassname)}>
         <div
           className={classNames(
-            "bg-default border-subtle max-w-3xl rounded-2xl border px-4 py-3 sm:p-4 ",
+            "bg-default max-w-3xl rounded-2xl border border-blue-200 px-4 py-3 shadow-sm dark:border-blue-800 sm:p-4 ",
             currentStepData.contentClassname
           )}>
           {typeof currentStepData.content === "function"

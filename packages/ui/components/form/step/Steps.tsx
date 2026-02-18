@@ -37,7 +37,7 @@ const Steps = (props: StepsProps) => {
               key={`step-${index}`}
               onClick={() => navigateToStep?.(index)}
               className={classNames(
-                "bg-inverted h-1 w-full rounded-[1px]",
+                "h-1 w-full rounded-[1px] bg-blue-600 dark:bg-blue-400",
                 index < currentStep - 1 && !disableNavigation ? "cursor-pointer" : ""
               )}
               data-testid={`step-indicator-${index}`}
@@ -45,7 +45,7 @@ const Steps = (props: StepsProps) => {
           ) : (
             <div
               key={`step-${index}`}
-              className="bg-emphasis h-1 w-full rounded-[1px] opacity-25"
+              className="h-1 w-full rounded-[1px] bg-blue-200 dark:bg-blue-900"
               data-testid={`step-indicator-${index}`}
             />
           );
