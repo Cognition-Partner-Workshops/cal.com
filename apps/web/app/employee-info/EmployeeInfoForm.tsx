@@ -15,6 +15,7 @@ import {
   HeadingLevel,
 } from "docx";
 import { saveAs } from "file-saver";
+import { addEmployee } from "./employeeStore";
 
 interface EmployeeData {
   firstName: string;
@@ -641,6 +642,22 @@ function EmergencyContactSection({ formData, handleChange, inputClass, labelClas
   );
 }
 
+function EmployeePageHeader(): React.JSX.Element {
+  return (
+    <div className="mb-8 text-center">
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Employee Personal Information</h1>
+      <p className="mt-2 text-gray-600 dark:text-gray-400">
+        Capture employee details and validate data with exportable test results
+      </p>
+      <a
+        href="/delete-employee"
+        className="mt-2 inline-block text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">
+        Go to Delete Employee &rarr;
+      </a>
+    </div>
+  );
+}
+
 function FormActions({ handleReset }: { handleReset: () => void }): React.JSX.Element {
   return (
     <div className="flex gap-4">
@@ -793,6 +810,7 @@ export default function EmployeeInfoForm(): React.JSX.Element {
     const results = validateEmployeeData(formData);
     setTestResults(results);
     setSubmitted(true);
+    addEmployee(formData);
   };
 
   const handleExportWord = async (): Promise<void> => {
@@ -822,14 +840,7 @@ export default function EmployeeInfoForm(): React.JSX.Element {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="mx-auto max-w-5xl px-4 py-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Employee Personal Information
-          </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Capture employee details and validate data with exportable test results
-          </p>
-        </div>
+        <EmployeePageHeader />
 
         <form onSubmit={handleSubmit}>
           <PersonalInfoSection {...sectionProps} />
