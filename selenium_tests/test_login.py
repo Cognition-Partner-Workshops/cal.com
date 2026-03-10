@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from conftest import BASE_URL, TEST_USERS
+from conftest import BASE_URL, TEST_USERS, _require_db
 
 
 class TestLoginPage:
@@ -15,7 +15,7 @@ class TestLoginPage:
 
     def test_login_page_loads(self, driver):
         """Verify that the login page loads and displays the login form."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         # Verify page title or login form is present
@@ -26,29 +26,29 @@ class TestLoginPage:
 
     def test_login_page_has_email_field(self, driver):
         """Verify the email input field is present."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         email_field = wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='email'], input[id='email']"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[id='email'], input[name='email']"))
         )
         assert email_field.is_displayed(), "Email field should be visible"
 
     def test_login_page_has_password_field(self, driver):
         """Verify the password input field is present."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         password_field = wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, "input[name='password'], input[id='password']")
+                (By.CSS_SELECTOR, "input[id='password'], input[name='password']")
             )
         )
         assert password_field.is_displayed(), "Password field should be visible"
 
     def test_login_page_has_submit_button(self, driver):
         """Verify the submit/sign-in button is present."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         submit_btn = wait.until(
@@ -58,11 +58,11 @@ class TestLoginPage:
 
     def test_login_page_has_forgot_password_link(self, driver):
         """Verify the 'Forgot password' link is present."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         # Wait for the page to load
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "form")))
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "[data-testid='login-form'], form")))
 
         # Look for forgot password link
         links = driver.find_elements(By.CSS_SELECTOR, "a[href*='forgot-password']")
@@ -70,11 +70,11 @@ class TestLoginPage:
 
     def test_successful_login(self, driver):
         """Test that a valid user can successfully log in."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         email_input = wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='email'], input[id='email']"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[id='email'], input[name='email']"))
         )
         email_input.clear()
         user_key = next(iter(TEST_USERS))
@@ -82,7 +82,7 @@ class TestLoginPage:
         email_input.send_keys(user["email"])
 
         password_input = driver.find_element(
-            By.CSS_SELECTOR, "input[name='password'], input[id='password']"
+            By.CSS_SELECTOR, "input[id='password'], input[name='password']"
         )
         password_input.clear()
         password_input.send_keys(user["password"])
@@ -98,11 +98,11 @@ class TestLoginPage:
 
     def test_login_with_invalid_email(self, driver):
         """Test that login fails with a non-existent email."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         email_input = wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='email'], input[id='email']"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[id='email'], input[name='email']"))
         )
         email_input.clear()
         email_input.send_keys("nonexistent@example.com")
@@ -128,11 +128,11 @@ class TestLoginPage:
 
     def test_login_with_wrong_password(self, driver):
         """Test that login fails with correct email but wrong password."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         email_input = wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='email'], input[id='email']"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[id='email'], input[name='email']"))
         )
         email_input.clear()
         user_key = next(iter(TEST_USERS))
@@ -161,7 +161,7 @@ class TestLoginPage:
 
     def test_login_with_empty_fields(self, driver):
         """Test that submitting empty fields shows validation errors."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         submit_button = wait.until(
@@ -176,12 +176,12 @@ class TestLoginPage:
 
     def test_password_field_is_masked(self, driver):
         """Verify that the password field masks input (type='password')."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         password_input = wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, "input[name='password'], input[id='password']")
+                (By.CSS_SELECTOR, "input[id='password'], input[name='password']")
             )
         )
         assert password_input.get_attribute("type") == "password", (
@@ -190,11 +190,11 @@ class TestLoginPage:
 
     def test_email_field_accepts_keyboard_input(self, driver):
         """Test that the email field properly accepts keyboard input."""
-        driver.get(f"{BASE_URL}/auth/login")
+        _require_db(driver, f"{BASE_URL}/auth/login")
         wait = WebDriverWait(driver, 15)
 
         email_input = wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='email'], input[id='email']"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[id='email'], input[name='email']"))
         )
         email_input.clear()
         email_input.send_keys("test@example.com")

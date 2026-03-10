@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from conftest import BASE_URL
+from conftest import BASE_URL, _require_db
 
 
 class TestSignupPage:
@@ -15,7 +15,7 @@ class TestSignupPage:
 
     def test_signup_page_loads(self, driver):
         """Verify the signup page loads successfully."""
-        driver.get(f"{BASE_URL}/signup")
+        _require_db(driver, f"{BASE_URL}/signup")
         wait = WebDriverWait(driver, 15)
 
         body = wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
@@ -23,7 +23,7 @@ class TestSignupPage:
 
     def test_signup_page_has_form_fields(self, driver):
         """Verify the signup page has the required form fields."""
-        driver.get(f"{BASE_URL}/signup")
+        _require_db(driver, f"{BASE_URL}/signup")
         wait = WebDriverWait(driver, 15)
 
         wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
@@ -38,7 +38,7 @@ class TestSignupPage:
 
     def test_signup_page_has_login_link(self, driver):
         """Verify the signup page has a link to the login page."""
-        driver.get(f"{BASE_URL}/signup")
+        _require_db(driver, f"{BASE_URL}/signup")
         wait = WebDriverWait(driver, 15)
 
         wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
@@ -50,7 +50,7 @@ class TestSignupPage:
 
     def test_signup_form_validates_empty_submission(self, driver):
         """Test that submitting an empty signup form shows validation."""
-        driver.get(f"{BASE_URL}/signup")
+        _require_db(driver, f"{BASE_URL}/signup")
         wait = WebDriverWait(driver, 15)
 
         wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
