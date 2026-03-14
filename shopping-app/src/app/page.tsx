@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import SearchFilters from "@/components/SearchFilters";
+import Sidebar from "@/components/Sidebar";
 
 interface Product {
   id: number;
@@ -70,102 +71,117 @@ export default function HomePage() {
     setFilters(newFilters);
   };
 
+  const handleCategoryFromSidebar = (category: string) => {
+    setPage(1);
+    setFilters((prev) => ({ ...prev, category }));
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Discover Amazing Products
-        </h1>
-        <p className="mt-2 text-gray-600">
-          {total} products available
-        </p>
-      </div>
+      <div className="flex flex-col lg:flex-row gap-8">
+        <Sidebar
+          categories={categories}
+          activeCategory={filters.category}
+          onCategoryChange={handleCategoryFromSidebar}
+        />
 
-      <SearchFilters
-        categories={categories}
-        onFilterChange={handleFilterChange}
-      />
-
-      {loading ? (
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="card animate-pulse">
-              <div className="aspect-square bg-gray-200" />
-              <div className="p-4 space-y-3">
-                <div className="h-3 bg-gray-200 rounded w-1/4" />
-                <div className="h-4 bg-gray-200 rounded w-3/4" />
-                <div className="h-3 bg-gray-200 rounded w-1/2" />
-                <div className="flex justify-between">
-                  <div className="h-5 bg-gray-200 rounded w-1/4" />
-                  <div className="h-8 bg-gray-200 rounded w-1/3" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : products.length === 0 ? (
-        <div className="mt-12 text-center">
-          <svg
-            className="mx-auto w-16 h-16 text-gray-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
-            No products found
-          </h3>
-          <p className="mt-2 text-gray-500">
-            Try adjusting your search or filters
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+        <div className="flex-1 min-w-0">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Discover Amazing Products
+            </h1>
+            <p className="mt-2 text-gray-600">
+              {total} products available
+            </p>
           </div>
 
-          {totalPages > 1 && (
-            <div className="mt-8 flex justify-center gap-2">
-              <button
-                onClick={() => setPage(Math.max(1, page - 1))}
-                disabled={page === 1}
-                className="btn-secondary text-sm"
-              >
-                Previous
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium ${
-                    p === page
-                      ? "bg-primary-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  {p}
-                </button>
+          <SearchFilters
+            categories={categories}
+            onFilterChange={handleFilterChange}
+          />
+
+          {loading ? (
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="card animate-pulse">
+                  <div className="aspect-square bg-gray-200" />
+                  <div className="p-4 space-y-3">
+                    <div className="h-3 bg-gray-200 rounded w-1/4" />
+                    <div className="h-4 bg-gray-200 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2" />
+                    <div className="flex justify-between">
+                      <div className="h-5 bg-gray-200 rounded w-1/4" />
+                      <div className="h-8 bg-gray-200 rounded w-1/3" />
+                    </div>
+                  </div>
+                </div>
               ))}
-              <button
-                onClick={() => setPage(Math.min(totalPages, page + 1))}
-                disabled={page === totalPages}
-                className="btn-secondary text-sm"
-              >
-                Next
-              </button>
             </div>
+          ) : products.length === 0 ? (
+            <div className="mt-12 text-center">
+              <svg
+                className="mx-auto w-16 h-16 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <h3 className="mt-4 text-lg font-medium text-gray-900">
+                No products found
+              </h3>
+              <p className="mt-2 text-gray-500">
+                Try adjusting your search or filters
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="mt-8 flex justify-center gap-2">
+                  <button
+                    onClick={() => setPage(Math.max(1, page - 1))}
+                    disabled={page === 1}
+                    className="btn-secondary text-sm"
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium ${
+                        p === page
+                          ? "bg-primary-600 text-white"
+                          : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setPage(Math.min(totalPages, page + 1))}
+                    disabled={page === totalPages}
+                    className="btn-secondary text-sm"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }

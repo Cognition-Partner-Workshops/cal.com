@@ -76,24 +76,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    for (const item of cartItems) {
-      if (item.quantity > item.stock) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: `Insufficient stock for ${item.name}`,
-          },
-          { status: 400 }
-        );
-      }
-    }
-
     const total = cartItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
     const createOrder = db.transaction(() => {
+      const getStock = db.prepare("SELECT stock, name FROM products WHERE id = ?");
+
+      for (const item of cartItems) {
+        const product = getStock.get(item.product_id) as { stock: number; name: string } | undefined;
+        if (!product || item.quantity > product.stock) {
+          throw new Error(`Insufficient stock for ${product?.name || "product"}`);
+        }
+      }
+
       const orderResult = db
         .prepare(
           "INSERT INTO orders (user_id, total, status, shipping_address, payment_method) VALUES (?, ?, 'confirmed', ?, ?)"
@@ -120,7 +117,16 @@ export async function POST(req: NextRequest) {
       return orderId;
     });
 
-    const orderId = createOrder();
+    let orderId;
+    try {
+      orderId = createOrder();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Order failed";
+      return NextResponse.json(
+        { success: false, error: message },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const { token, isLoading: authLoading, loadFromStorage } = useAuthStore();
   const { items, setItems, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
+  const [cartLoading, setCartLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
   const [error, setError] = useState("");
@@ -36,8 +37,10 @@ export default function CheckoutPage() {
       return;
     }
     if (token) {
+      setCartLoading(true);
       api.cart.list().then((res) => {
         if (res.success && res.data) setItems(res.data);
+        setCartLoading(false);
       });
     }
   }, [token, authLoading, router, setItems]);
@@ -81,7 +84,7 @@ export default function CheckoutPage() {
     setLoading(false);
   };
 
-  if (authLoading) {
+  if (authLoading || cartLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="animate-pulse space-y-4">
