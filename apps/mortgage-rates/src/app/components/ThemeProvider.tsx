@@ -37,13 +37,11 @@ function applyThemeToDocument(theme: Theme): void {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const initial = getInitialTheme();
     setTheme(initial);
     applyThemeToDocument(initial);
-    setMounted(true);
   }, []);
 
   const toggleTheme = useCallback((): void => {
@@ -57,10 +55,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
       return next;
     });
   }, []);
-
-  if (!mounted) {
-    return <div>{children}</div>;
-  }
 
   return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
