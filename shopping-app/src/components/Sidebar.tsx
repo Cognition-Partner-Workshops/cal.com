@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useAuthStore } from "@/store/auth";
 import { useCartStore } from "@/store/cart";
-import { api } from "@/lib/api";
 
 interface SidebarProps {
   categories: string[];
@@ -18,13 +16,9 @@ export default function Sidebar({
   activeCategory,
   onCategoryChange,
 }: SidebarProps) {
-  const { user, token, logout, loadFromStorage } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { items } = useCartStore();
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [loginLoading, setLoginLoading] = useState(false);
 
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = items.reduce(
@@ -32,149 +26,87 @@ export default function Sidebar({
     0
   );
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginError("");
-    setLoginLoading(true);
-
-    const res = await api.auth.login(email, password);
-    if (res.success && res.data) {
-      useAuthStore.getState().setAuth(res.data.user, res.data.token);
-      setEmail("");
-      setPassword("");
-    } else {
-      setLoginError(res.error || "Login failed");
-    }
-    setLoginLoading(false);
-  };
-
   const handleLogout = () => {
     logout();
-    router.refresh();
+    router.push("/login");
   };
 
   return (
     <aside className="w-full lg:w-64 shrink-0 space-y-6">
       <div className="card p-4">
-        {user ? (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                <span className="text-primary-700 font-semibold text-sm">
-                  {user.name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-900 truncate">
-                  {user.name}
-                </p>
-                <p className="text-xs text-gray-500 truncate">{user.email}</p>
-              </div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+              <span className="text-primary-700 font-semibold text-sm">
+                {user?.name.charAt(0).toUpperCase()}
+              </span>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Link
-                href="/cart"
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
-                  />
-                </svg>
-                Cart
-                {cartCount > 0 && (
-                  <span className="ml-auto bg-primary-100 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-              <Link
-                href="/orders"
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-                My Orders
-              </Link>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">
+                {user?.name}
+              </p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
-            {cartCount > 0 && (
-              <div className="pt-2 border-t border-gray-100">
-                <p className="text-xs text-gray-500">
-                  Cart total: <span className="font-semibold text-gray-900">${cartTotal.toFixed(2)}</span>
-                </p>
-              </div>
-            )}
-            <button
-              onClick={handleLogout}
-              className="w-full text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg px-3 py-2 transition-colors text-left"
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Link
+              href="/cart"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Sign Out
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-gray-900">Sign In</h3>
-            <form onSubmit={handleLogin} className="space-y-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input-field text-sm"
-                placeholder="Email"
-                required
-              />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-field text-sm"
-                placeholder="Password"
-                required
-              />
-              {loginError && (
-                <p className="text-xs text-red-600">{loginError}</p>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
+                />
+              </svg>
+              Cart
+              {cartCount > 0 && (
+                <span className="ml-auto bg-primary-100 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
               )}
-              <button
-                type="submit"
-                disabled={loginLoading}
-                className="btn-primary w-full text-sm"
+            </Link>
+            <Link
+              href="/orders"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                {loginLoading ? "Signing in..." : "Sign In"}
-              </button>
-            </form>
-            <p className="text-xs text-gray-500 text-center">
-              No account?{" "}
-              <Link
-                href="/signup"
-                className="text-primary-600 hover:text-primary-700 font-medium"
-              >
-                Sign up
-              </Link>
-            </p>
-            <div className="text-xs text-gray-400 text-center">
-              Demo: demo@shop.com / password123
-            </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+              My Orders
+            </Link>
           </div>
-        )}
+          {cartCount > 0 && (
+            <div className="pt-2 border-t border-gray-100">
+              <p className="text-xs text-gray-500">
+                Cart total: <span className="font-semibold text-gray-900">${cartTotal.toFixed(2)}</span>
+              </p>
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            className="w-full text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg px-3 py-2 transition-colors text-left"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
 
       <div className="card p-4">

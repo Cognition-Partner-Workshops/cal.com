@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/auth";
 import ProductCard from "@/components/ProductCard";
 import SearchFilters from "@/components/SearchFilters";
 import Sidebar from "@/components/Sidebar";
@@ -18,6 +19,7 @@ interface Product {
 }
 
 export default function HomePage() {
+  const { user } = useAuthStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [total, setTotal] = useState(0);
@@ -79,11 +81,13 @@ export default function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        <Sidebar
-          categories={categories}
-          activeCategory={filters.category}
-          onCategoryChange={handleCategoryFromSidebar}
-        />
+        {user && (
+          <Sidebar
+            categories={categories}
+            activeCategory={filters.category}
+            onCategoryChange={handleCategoryFromSidebar}
+          />
+        )}
 
         <div className="flex-1 min-w-0">
           <div className="mb-8">
