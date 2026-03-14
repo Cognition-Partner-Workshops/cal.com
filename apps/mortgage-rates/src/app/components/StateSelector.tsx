@@ -19,14 +19,16 @@ export default function StateSelector({
 
   return (
     <div className="relative">
-      <label htmlFor="state-select" className="mb-2 block text-sm font-medium text-gray-700">
+      <label
+        htmlFor="state-select"
+        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
         Select Your State
       </label>
       <select
         id="state-select"
         value={selectedState}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => handleChange(e, onStateChange)}
-        className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
         <option value="">-- Choose a state --</option>
         {sortedStates.map(([code, name]) => (
           <option key={code} value={code}>

@@ -3,7 +3,7 @@
 export default function LoadingSpinner(): React.ReactElement {
   return (
     <div className="flex justify-center py-12">
-      <div className="flex items-center gap-3 text-gray-500">
+      <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400">
         <svg
           className="h-5 w-5 animate-spin text-blue-600"
           xmlns="http://www.w3.org/2000/svg"

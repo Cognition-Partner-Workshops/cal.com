@@ -79,13 +79,15 @@ export default function MortgageRateDashboard(): React.ReactElement {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900">Mortgage Rate Finder</h1>
-        <p className="mt-3 text-lg text-gray-600">
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+          Mortgage Rate Finder
+        </h1>
+        <p className="mt-3 text-lg text-gray-600 dark:text-gray-400">
           Compare today&apos;s mortgage rates across different terms for your location
         </p>
       </div>
 
-      <div className="mx-auto mb-8 max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="mx-auto mb-8 max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div className="grid gap-6 md:grid-cols-2">
           <StateSelector selectedState={selectedState} onStateChange={setSelectedState} />
           <LoanAmountInput loanAmount={loanAmount} onLoanAmountChange={setLoanAmount} />
@@ -95,7 +97,7 @@ export default function MortgageRateDashboard(): React.ReactElement {
       {loading && <LoadingSpinner />}
 
       {error && (
-        <div className="mx-auto max-w-2xl rounded-lg border border-red-200 bg-red-50 p-4 text-center text-red-700">
+        <div className="mx-auto max-w-2xl rounded-lg border border-red-200 bg-red-50 p-4 text-center text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400">
           {error}
         </div>
       )}

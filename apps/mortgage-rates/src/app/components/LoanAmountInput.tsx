@@ -9,7 +9,7 @@ function getPresetClassName(loanAmount: number, preset: number): string {
   if (loanAmount === preset) {
     return "rounded-full px-3 py-1 text-xs font-medium transition-colors bg-blue-600 text-white";
   }
-  return "rounded-full px-3 py-1 text-xs font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200";
+  return "rounded-full px-3 py-1 text-xs font-medium transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600";
 }
 
 export default function LoanAmountInput({
@@ -24,11 +24,15 @@ export default function LoanAmountInput({
 
   return (
     <div>
-      <label htmlFor="loan-amount" className="mb-2 block text-sm font-medium text-gray-700">
+      <label
+        htmlFor="loan-amount"
+        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
         Loan Amount
       </label>
       <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+          $
+        </span>
         <input
           id="loan-amount"
           type="text"
@@ -40,7 +44,7 @@ export default function LoanAmountInput({
               onLoanAmountChange(parsed);
             }
           }}
-          className="block w-full rounded-lg border border-gray-300 bg-white py-3 pl-8 pr-4 text-gray-900 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="block w-full rounded-lg border border-gray-300 bg-white py-3 pl-8 pr-4 text-gray-900 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           placeholder="350,000"
         />
       </div>
