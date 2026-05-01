@@ -11,10 +11,6 @@ env:
   DATABASE_HOST: "database:5432"
 
 on:
-  push:
-    tags:
-      - "v*"
-  # in case manual trigger is needed
   workflow_dispatch:
     inputs:
       RELEASE_TAG:
