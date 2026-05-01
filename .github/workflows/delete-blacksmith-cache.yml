@@ -6,8 +6,6 @@ on:
         description: "Blacksmith Cache Key to Delete"
         required: true
         type: string
-  pull_request:
-    types: [closed]
 
 jobs:
   manually-delete-blacksmith-cache:

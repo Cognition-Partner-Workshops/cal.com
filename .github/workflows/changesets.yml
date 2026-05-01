@@ -1,9 +1,7 @@
 name: Create PR containing updated CHANGELOG.md and release packages to NPM once PR is merged
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions:

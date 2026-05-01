@@ -1,12 +1,7 @@
 name: "Validate PRs"
 
 on:
-  pull_request_target:
-    types:
-      - opened
-      - reopened
-      - edited
-      - synchronize
+  workflow_dispatch:
 
 permissions:
   pull-requests: write
